@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <div class="container py-5">
+        <h5 class="offcanvas-title">Unidevi</h5>
+
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4">
+                <h1 class="mb-3">Simplifie ta gestion,<br>remplis ton agenda<br>et augmente tes réservations 🚀</h1>
+                <p class="mb-3">15 €/mois – Sans engagement<br>Zéro commission</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><span class="highlight">✔</span> Système de réservation 100 % personnalisé</li>
+                    <li class="mb-2"><span class="highlight">✔</span> Synchronisation Google Agenda</li>
+                    <li class="mb-2"><span class="highlight">✔</span> Rappel email automatique</li>
+                    <li class="mb-2"><span class="highlight">✔</span> Augmente ton taux de conversion</li>
+                    <li class="mb-2"><span class="highlight">✔</span> Évite les annulations de RDV</li>
+                </ul>
+                <p class="mt-4"><i class="bi bi-lock"></i> Paiement sécurisé via Stripe</p>
+                <p><i class="bi bi-arrow-counterclockwise"></i> Sans engagement, annulation à tout moment</p>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h4 class="mb-3">Créer mon compte</h4>
+                    <form method="post" id="demo-form">
+                        <div class="mb-3">
+                            <input type="email" requried class="form-control" placeholder="E-mail" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" requried class="form-control" placeholder="Mot de passe" name="password">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" requried class="form-check-input" id="cguCheck" name="cgu">
+                            <label class="form-check-label" for="cguCheck">J'accepte les CGU</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 g-recaptcha" data-sitekey="{{ siteKey }}"
+                                data-callback='onSubmit'
+                                data-action='submit'>S'inscrire</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function onSubmit(token) {
+          document.getElementById("demo-form").submit();
+        }
+    </script>
+
+{% endblock %}

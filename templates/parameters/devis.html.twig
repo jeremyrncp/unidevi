@@ -1,0 +1,56 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Préférences devis{% endblock %}
+
+{% block body %}
+<div class="p-4 p-md-5">
+    {% include "_partials/navbar_parameters.html.twig" %}
+
+    <h2 class="mb-4 mt-4">Préférences devis</h2>
+
+    {{ form_start(form) }}
+    >
+        <div class="row g-4">
+            <!-- TVA par défaut -->
+            <div class="col-md-6">
+                {{ form_row(form.tvaRate) }}
+            </div>
+
+            <!-- Validité (jours) -->
+            <div class="col-md-6">
+                {{ form_row(form.validityDevis) }}
+            </div>
+
+            <!-- Affichage du prix -->
+            <div class="col-md-6">
+                {{ form_row(form.priceTypeDevis) }}
+            </div>
+
+            <!-- Mentions légales -->
+            <div class="col-md-12">
+                {{ form_row(form.mentionsLegalesDevis) }}
+            </div>
+
+            <!-- Options -->
+            <div class="col-12">
+                <div class="form-check mb-2">
+                    {{ form_row(form.displayFourchetteIA) }}
+                </div>
+                <div class="form-check mb-2">
+                    {{ form_row(form.proposerAutomatiquementUpsellsDevis) }}
+                </div>
+                <div class="form-check">
+                    {{ form_row(form.autoriseSuppressionGlobaleUpsellsDevis) }}
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12">
+                <button type="submit" class="btn btn-brand w-100 w-md-auto px-5 text-white">
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

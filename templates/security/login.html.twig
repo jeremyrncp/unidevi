@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+
+{% block body %}
+<div class="container py-5">
+    <h5 class="offcanvas-title">Unidevi</h5>
+
+    <div class="row align-items-center">
+
+        <form action="{{ path('app_login') }}" method="post">
+        {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Se deconnecter</a>
+                </div>
+            {% endif %}
+
+            <h1 class="h3 mb-3 font-weight-normal">Merci de vous identifier</h1>
+            <label for="username">Email</label><br />
+            <input type="email" value="{{ last_username }}" name="_username" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="email" required autofocus>
+           <br /><br /> <label for="password">Password</label><br />
+            <input type="password" name="_password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="current-password" required>
+            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+            {#
+                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                See https://symfony.com/doc/current/security/remember_me.html
+
+                <div class="checkbox mb-3">
+                    <input type="checkbox" name="_remember_me" id="_remember_me">
+                    <label for="_remember_me">Remember me</label>
+                </div>
+            #}
+            <br /><br />
+
+            <button class="btn btn-primary btn-block" type="submit">
+                Se connecter
+            </button>
+        </form>
+        <br />
+    </div>
+    <div class="mt-5">
+        <a href="{{ path('app_register') }}">S'inscrire</a> - <a href="{{ path('app_reset_password_process') }}">Reinitialiser le mot de passe</a>
+    </div>
+</div>
+{% endblock %}

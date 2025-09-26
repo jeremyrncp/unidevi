@@ -1,0 +1,20 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Hello ProfilController!{% endblock %}
+
+{% block body %}
+<div class="p-4 p-md-5">
+    <h2 class="mb-4">Profil</h2>
+
+    <div class="row">
+        <div class="col-6 text-center">
+            {% if user.avatar is not null %}
+                <img src="/uploads/{{ user.avatar }}" width="300" alt="avatar" />
+            {% endif %}
+        </div>
+        <div class="col-6 text-right">
+            {{ form(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

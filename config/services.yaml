@@ -18,3 +18,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Security\RecaptchaVerifier:
+        arguments:
+            $secret: '%env(RECAPTCHA_SECRET_KEY)%'
+            $minScore: '%env(float:RECAPTCHA_MIN_SCORE)%'

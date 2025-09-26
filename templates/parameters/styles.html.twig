@@ -1,0 +1,271 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Logo et styles{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+{% endblock %}
+
+
+{% block body %}
+<div class="p-4 p-md-5">
+    {% include "_partials/navbar_parameters.html.twig" %}
+
+    <h2 class="mb-4 mt-4">Logo et styles</h2>
+
+    <!-- Contenu -->
+    <div class="row g-4">
+            <!-- Col gauche -->
+            <div class="col-lg-7">
+                <!-- Upload Logo -->
+                <div class="mb-4">
+                    <div class="label-muted mb-2 fw-semibold">Logo</div>
+                        {% if user.styleLogo is not null %}<a href="/uploads/{{ user.styleLogo }}" target="_blank">Logo actuelle</a>{% endif %}
+                    <br />
+                    <!-- Dropzone / Preview -->
+                    <label class="dropzone" id="logoDrop" for="logoInput">
+                        <div id="logoEmpty">
+                            <i class="bi bi-upload fs-3 d-block mb-1"></i>
+                            <div>Téléverser un logo</div>
+                        </div>
+                        <img id="logoPreview" class="d-none" alt="Logo téléversé">
+                    </label>
+
+                    <!-- Input fichier (masqué) -->
+                    <input class="d-none" type="file" accept="image/*" id="logoInput">
+                    <!-- CSRF si tu es en Twig/Symfony -->
+                    <input type="hidden" id="csrfUploadLogo" value="{{ csrf_token('upload_logo') }}">
+                </div>
+
+                <!-- Style de devis -->
+                <div class="mb-4">
+                    <div class="label-muted mb-2 fw-semibold">Style de devis</div>
+                    <div class="d-flex flex-wrap gap-3">
+                        <button type="button" class="style-chip {% if user.styleType == "epure" %}active{% endif %}" data-style="epure">Épure</button>
+                        <button type="button" class="style-chip {% if user.styleType == "signature" %}active{% endif %}" data-style="signature" style="font-family:'Merriweather', serif;">Signature</button>
+                        <button type="button" class="style-chip {% if user.styleType == "structura" %}active{% endif %}" data-style="structura">Structura</button>
+                        <button type="button" class="style-chip {% if user.styleType == "immo" %}active{% endif %}" data-style="immo">Immo+</button>
+                    </div>
+                </div>
+
+                <!-- Police & couleur -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Police</label>
+                        <select id="fontSelect" class="form-select">
+                            <option value="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial">Inter</option>
+                            <option value="Roboto, Helvetica, Arial">Roboto</option>
+                            <option value="Lato, Helvetica, Arial">Lato</option>
+                            <option value="'Merriweather', serif">Merriweather (serif)</option>
+                            <option value="Poppins, Helvetica, Arial">Poppins</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Couleur principale</label><br>
+                        <input id="colorPick" type="color" class="form-control form-control-color color-pick" value="#4060ff" title="Choisir la couleur">
+                    </div>
+                </div>
+
+                <input type="hidden" id="styleType" value="" />
+
+                <!-- Bouton -->
+                <div class="mt-4">
+                    <button class="btn btn-brand w-100 w-md-auto px-5 text-white" type="button" onsubmit="save()">Enregistrer</button>
+                </div>
+            </div>
+
+            <!-- Col droite : aperçu -->
+            <div class="col-lg-5">
+                <div class="label-muted mb-2 fw-semibold">Aperçu</div>
+                <div class="preview p-3" id="preview" style="--accent:#4060ff;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="h6 m-0 fw-bold">DEVIS</div>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="small text-muted mb-2">Entreprise</div>
+                    <div class="line mb-2 w-50"></div>
+                    <div class="line mb-4 w-25"></div>
+
+                    <div class="d-flex justify-content-between align-items-center py-2 border-top">
+                        <div>Prestation 1</div>
+                        <div class="fw-semibold">800.00 €</div>
+                    </div>
+
+                    <div class="mt-3 d-flex gap-2">
+                        <div class="bar accent" style="width:90px"></div>
+                        <div class="bar" style="width:50px"></div>
+                        <div class="bar" style="width:35px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- === Modal de recadrage === -->
+    <div class="modal fade" id="cropModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-header">
+                    <h5 class="modal-title">Recadrer le logo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="ratio ratio-16x9 bg-light rounded">
+                        <img id="cropperImage" alt="A recadrer" style="max-width:100%; display:block;">
+                    </div>
+                    <div class="small text-muted mt-2">
+                        Astuce : molette pour zoomer, glisser pour déplacer.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button id="cropSave" class="btn btn-primary">Recadrer & enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (() => {
+      const input   = document.getElementById('logoInput');
+      const drop    = document.getElementById('logoDrop');
+      const imgPrev = document.getElementById('logoPreview');
+      const empty   = document.getElementById('logoEmpty');
+      const modalEl = document.getElementById('cropModal');
+      const cropImg = document.getElementById('cropperImage');
+      const csrf    = document.getElementById('csrfUploadLogo');
+      let cropper   = null;
+      let currentFile = null;
+
+      // Ouvre le sélecteur
+      drop.addEventListener('click', () => input.click());
+
+      // Drag & drop
+      ['dragenter','dragover'].forEach(ev =>
+          drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('border-primary'); })
+      );
+      ['dragleave','drop'].forEach(ev =>
+          drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('border-primary'); })
+      );
+      drop.addEventListener('drop', e => {
+        const f = e.dataTransfer.files?.[0];
+        if (f) { handleFile(f); }
+      });
+
+      // Choix fichier
+      input.addEventListener('change', e => {
+        const f = e.target.files?.[0];
+        if (f) { handleFile(f); }
+      });
+
+      function handleFile(file){
+        if (!file.type.startsWith('image/')) return alert("Fichier non supporté.");
+        currentFile = file;
+        // Ouvre le modal + instancie cropper
+        const url = URL.createObjectURL(file);
+        cropImg.src = url;
+        const bsModal = new bootstrap.Modal(modalEl);
+        bsModal.show();
+
+        modalEl.addEventListener('shown.bs.modal', () => {
+          cropper?.destroy();
+          cropper = new Cropper(cropImg, {
+            viewMode: 1,
+            aspectRatio: 3 / 1,          // << changer en NaN pour libre
+            autoCropArea: 1,
+            minContainerHeight: 380,
+            background: false
+          });
+        }, { once:true });
+
+        // Nettoyage URL objet à la fermeture
+        modalEl.addEventListener('hidden.bs.modal', () => {
+          cropper?.destroy(); cropper = null;
+          URL.revokeObjectURL(url);
+        }, { once:true });
+      }
+
+      // Recadre + upload
+      document.getElementById('cropSave').addEventListener('click', async () => {
+        if (!cropper) return;
+
+        // Canvas final (taille au choix – 960x320 conseillé pour un logo 3:1)
+        const canvas = cropper.getCroppedCanvas({
+          width: 960, height: 320,
+          imageSmoothingQuality: 'high', fillColor: '#fff'
+        });
+
+        // Convertit en Blob PNG/WebP
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 0.92));
+        if (!blob) return;
+
+        // Préview locale
+        imgPrev.src = canvas.toDataURL('image/png');
+        imgPrev.classList.remove('d-none');
+        empty.classList.add('d-none');
+
+        // Envoi serveur
+        const fd = new FormData();
+        fd.append('logo', blob, 'logo.png');
+        if (csrf) fd.append('_token', csrf.value);
+
+        try {
+          const r = await fetch('/api/settings/logo', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd
+          });
+          if (!r.ok) throw new Error('Upload échoué');
+          const data = await r.json();
+          // met à jour le preview avec l’URL publique générée côté serveur
+          if (data.url) imgPrev.src = data.url;
+          bootstrap.Modal.getInstance(modalEl).hide();
+        } catch (e) {
+          alert(e.message || 'Erreur réseau');
+        }
+      });
+    })();
+
+    // ========== Style chips ==========
+    document.querySelectorAll('.style-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector("#styleType").value = btn.getAttribute("data-style").valueOf();
+        document.querySelectorAll('.style-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // petite variation visuelle sur l’aperçu en fonction du style
+        const pv = document.getElementById('preview');
+        pv.style.borderStyle = btn.dataset.style === 'signature' ? 'dashed' : 'solid';
+      });
+    });
+
+    // ========== Couleur principale -> aperçu ==========
+    const color = document.getElementById('colorPick');
+    color.addEventListener('input', () => {
+      document.getElementById('preview').style.setProperty('--accent', color.value);
+    });
+
+    // ========== Police -> aperçu ==========
+    const fontSelect = document.getElementById('fontSelect');
+    fontSelect.addEventListener('change', () => {
+      document.getElementById('preview').style.fontFamily = fontSelect.value;
+    });
+
+    const save = async () => {
+      try {
+        const r = await fetch('/api/settings/styles', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: fd
+        });
+        if (!r.ok) throw new Error('Upload échoué');
+        const data = await r.json();
+
+        alert(data.message);
+        window.reload;
+      } catch (e) {
+        alert(e.message || 'Erreur réseau');
+      }
+    }
+    </script>
+</div>
+{% endblock %}

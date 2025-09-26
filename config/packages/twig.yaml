@@ -1,5 +1,9 @@
 twig:
+    form_themes: ['bootstrap_5_layout.html.twig']
     file_name_pattern: '*.twig'
+    globals:
+        support_contact: '%env(SUPPORT_CONTACT)%'
+        public_key_stripe: '%env(STRIPE_PUBLIC_KEY)%'
 
 when@test:
     twig:

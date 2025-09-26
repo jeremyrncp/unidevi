@@ -19,6 +19,22 @@
     </head>
     <body>
         <div class="app-shell">
+            <!-- Top bar -->
+            <header class="app-header">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <span class="brand-dot"></span>
+                            <strong><a href="/">Mon espace client</a></strong>
+                        </div>
+                        <nav class="d-flex align-items-center gap-4">
+                            <a class="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover" href="{{ path("app_profil") }}">Mon profil</a>
+                            <a class="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover" href="/logout">Déconnexion</a>
+                            {% if user.avatar is not null %}<span class="avatar" style="background:#f9d1d1 url('/uploads/{{ user.avatar }}') center/cover;" aria-label="Photo profil"></span>{% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </header>
 
             {% set flashMessages = app.session.flashbag.get('message') %}
             {% if flashMessages|length > 0 %}

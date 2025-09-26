@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Definition du mot de passe{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+</style>
+
+<div class="example-wrapper">
+    {% if message is not null %}
+            <div class="alert alert-success">{{ message|raw }}</div>
+    {% else %}
+        {{ form(form) }}
+    {% endif %}
+</div>
+{% endblock %}

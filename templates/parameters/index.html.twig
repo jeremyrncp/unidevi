@@ -1,0 +1,75 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Informations de l'entreprise{% endblock %}
+
+{% block body %}
+    <div class="p-4 p-md-5">
+        {% include "_partials/navbar_parameters.html.twig" %}
+
+        <h2 class="mb-4 mt-4">Informations entreprise</h2>
+        {{ form_start(form) }}
+
+            <!-- Row 1 -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.companyName) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.juridical) }}
+                </div>
+
+                <!-- Row 2 -->
+                <div class="col-md-6">
+                    {{ form_row(form.adresse) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.postalCode) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.country) }}
+                </div>
+                <div class="col-md-12">
+                    {{ form_row(form.phoneNumber) }}
+                </div>
+                <!-- Row 4 -->
+                <div class="col-md-6">
+                    {{ form_row(form.emailContact) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.siret) }}
+                </div>
+
+                <!-- Row 5: Google badge + toggle -->
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="form-check form-switch m-0">
+                            {{ form_row(form.isDisplayAvisGoogle) }}
+                        </div>
+                        {{ form_row(form.avisGoogle) }}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="google-badge h-100 d-flex align-items-center gap-3">
+                        <img src="https://www.gstatic.com/images/branding/product/2x/google_g_48dp.png" alt="Google" width="28" height="28">
+                        <div>
+                            <div class="fw-semibold">Noté 8/5 sur Google</div>
+                            <div class="text-warning">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="col-12 mt-2">
+                    <button class="btn btn-brand w-100 w-md-auto px-5 text-white" type="submit">Enregistrer</button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
