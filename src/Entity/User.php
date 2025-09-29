@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -104,6 +106,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $styleColor = null;
+
+    #[ORM\OneToMany(targetEntity: Subscription::class, mappedBy: 'owner', cascade: ["remove"])]
+    private Collection $subscriptions;
+
+    /**
+     * @var Collection<int, Payment>
+     */
+    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'owner', cascade: ["remove"])]
+    private Collection $payments;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $trialEndedAt = null;
+
+    /**
+     * @var Collection<int, Devis>
+     */
+    #[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'owner', orphanRemoval: true)]
+    private Collection $devis;
+
+    /**
+     * @var Collection<int, Customer>
+     */
+    #[ORM\OneToMany(targetEntity: Customer::class, mappedBy: 'owner')]
+    private Collection $customers;
+
+
+    public function __construct()
+    {
+        $this->subscriptions = new ArrayCollection();
+        $this->payments = new ArrayCollection();
+        $this->devis = new ArrayCollection();
+        $this->customers = new ArrayCollection();
+
+    }
 
     public function getId(): ?int
     {
@@ -458,6 +494,139 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStyleColor(?string $styleColor): static
     {
         $this->styleColor = $styleColor;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Subscription>
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Subscription $subscription): static
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions->add($subscription);
+            $subscription->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): static
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getOwner() === $this) {
+                $subscription->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): static
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments->add($payment);
+            $payment->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePayment(Payment $payment): static
+    {
+        if ($this->payments->removeElement($payment)) {
+            // set the owning side to null (unless already changed)
+            if ($payment->getOwner() === $this) {
+                $payment->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTrialEndedAt(): ?\DateTime
+    {
+        return $this->trialEndedAt;
+    }
+
+    public function setTrialEndedAt(\DateTime $trialEndedAt): static
+    {
+        $this->trialEndedAt = $trialEndedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Devis>
+     */
+    public function getDevis(): Collection
+    {
+        return $this->devis;
+    }
+
+    public function addDevi(Devis $devi): static
+    {
+        if (!$this->devis->contains($devi)) {
+            $this->devis->add($devi);
+            $devi->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDevi(Devis $devi): static
+    {
+        if ($this->devis->removeElement($devi)) {
+            // set the owning side to null (unless already changed)
+            if ($devi->getOwner() === $this) {
+                $devi->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getCustomers(): Collection
+    {
+        return $this->customers;
+    }
+
+    public function addCustomer(Customer $customer): static
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers->add($customer);
+            $customer->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): static
+    {
+        if ($this->customers->removeElement($customer)) {
+            // set the owning side to null (unless already changed)
+            if ($customer->getOwner() === $this) {
+                $customer->setOwner(null);
+            }
+        }
 
         return $this;
     }

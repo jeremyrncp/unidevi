@@ -2,6 +2,7 @@
 
 namespace App\Controller\Settings;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -14,45 +15,34 @@ class StyleController extends AbstractController
     #[Route('/api/settings/styles', name: 'api_settings_styles', methods: ['POST'])]
     public function __invoke(Request $request, EntityManagerInterface $em): JsonResponse
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $file = $request->request->get('logo');  // Blob envoyé par le front
-        if (!$file) {
-            return new JsonResponse(['error' => 'Aucun fichier'], 400);
+        $data = json_decode($request->getContent());
+
+        $styleType = $data->styleType;  // Blob envoyé par le front
+        if (!$styleType) {
+            return new JsonResponse(['error' => 'Aucun type de style'], 400);
         }
 
-        // Validation basique
-        $allowed = ['image/png','image/jpeg','image/webp'];
-        if (!in_array($file->getClientMimeType(), $allowed, true)) {
-            return new JsonResponse(['error' => 'Type de fichier non supporté'], 415);
-        }
-        if ($file->getSize() > 2 * 1024 * 1024) { // 2 Mo
-            return new JsonResponse(['error' => 'Fichier trop volumineux'], 413);
+        $stylePolice = $data->stylePolice;  // Blob envoyé par le front
+        if (!$stylePolice) {
+            return new JsonResponse(['error' => 'Aucune police de style'], 400);
         }
 
-        // Dossier public (configurable)
-        $publicDir = $this->getParameter('kernel.project_dir').'/public/uploads/';
-        if (!is_dir($publicDir)) { @mkdir($publicDir, 0775, true); }
-
-        // Nom de fichier unique
-        $ext = $file->guessExtension() ?: 'png';
-        $filename = bin2hex(random_bytes(8)).'.'.$ext;
-
-        try {
-            $file->move($publicDir, $filename);
-        } catch (FileException $e) {
-            return new JsonResponse(['error' => 'Erreur lors de la copie'], 500);
+        $styleColor = $data->styleColor;  // Blob envoyé par le front
+        if (!$styleColor) {
+            return new JsonResponse(['error' => 'Aucune police de style'], 400);
         }
 
-        // Sauvegarde BDD
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
-        $publicUrl = '/uploads/'.$filename;
-
-        $user->setStyleLogo($filename);
+        $user->setStyleType($styleType);
+        $user->setStylePolice($stylePolice);
+        $user->setStyleColor($styleColor);
         $em->flush();
 
-        return new JsonResponse(['url' => $publicUrl], 201);
+        return new JsonResponse(['message' => "Style mis à jour"], 201);
     }
 
 }

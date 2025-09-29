@@ -1,0 +1,139 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Abonnement{% endblock %}
+
+{% block body %}
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <div class="p-4 p-md-5">
+    {% include "_partials/navbar_parameters.html.twig" %}
+
+    <h2 class="mb-4 mt-4">Abonnement</h2>
+
+    {% if subscription is null or subscriptionStripe is null or subscriptionStripe.status == "incomplete" %}
+        {% if user.trialEndedAt is not null %}
+            <div class="alert alert-info">
+                Vous bénéficiez de l'offre d'essai gratuit jusqu'à l'abonnement ou le <b>{{ user.trialEndedAt|date("d-m-Y") }}</b>
+            </div>
+        {% endif %}
+
+        <div class="form-section">
+            <h3 class="mb-4">S'abonner</h3>
+            <form id="subscription-form">
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="E-mail" value="{{ user.email }}" disabled>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="cguCheck">
+                    <label class="form-check-label" for="cguCheck">J'accepte les <a href="https://unidevi.fr/cgu" target="_blank">CGU</a></label>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="Nom sur la carte">
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="promo" placeholder="Code promo" class="form-control" />
+                </div>
+                <div class="row mb-3" id="card-element">
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-primary w-100">Activer mon abonnement</button>
+            </form>
+        </div>
+    {% else %}
+        {% if subscription.active == true %}
+            <h3>
+                Souscription à {{ priceSubscription/100 }}€ par mois active
+                <a href="{{ path("app_subscription_pause") }}" class="btn btn-outline-primary">Mettre en pause</a><br />
+                <a href="https://dispoo.fr/resiliation" class="btn btn-outline-primary" target="_blank">Resilier l'abonnement</a>
+            </h3>
+        {% else %}
+            <h3>
+                Souscription à {{ priceSubscription/100 }}€ par mois inactive
+                <a href="{{ path("app_subscription_resume") }}" class="btn btn-outline-primary">Reprendre l'abonnement</a><br />
+                <a href="https://dispoo.fr/resiliation" class="btn btn-outline-primary" target="_blank">Resilier l'abonnement</a>
+            </h3>
+        {% endif %}
+
+        <br /><br /><br />
+        <h3>Mes paiements</h3>
+        <table class="table table-dark table-striped mt-3">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Etat</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.createdAt|date("H:i d-m-Y") }}</td>
+                    <td>{{ payment.amountCents/100 }}€</td>
+                    <td>{{ payment.state }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+    <script>
+    const stripe = Stripe('{{ public_key_stripe }}');
+    const elements = stripe.elements();
+    const style = {
+      base: {
+        fontSize: '16px',
+        color: '#32325d',
+        '::placeholder': { color: '#a0aec0' },
+      }
+    };
+
+    const card = elements.create('card', { style });
+    card.mount('#card-element');
+
+    document.querySelector('#subscription-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.querySelector('#email').value;
+      const promoCode = document.getElementById("promo").value;
+      const address = document.querySelector('#address').value;
+
+
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: card,
+        billing_details: { email }
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      document.querySelector("#subscription-form").innerHTML = "<div class='loader'></div>";
+
+
+      const res = await fetch('/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, promoCode, address, paymentMethod: paymentMethod.id })
+      });
+
+      const { clientSecret } = await res.json();
+
+      if (clientSecret !== undefined) {
+        const result = await stripe.confirmCardPayment(clientSecret);
+        if (result.error) {
+          alert(result.error.message);
+        } else {
+          if (result.paymentIntent.status === 'succeeded') {
+            alert('Abonnement activé avec succès !');
+            window.location.reload();
+          }
+        }
+      }
+      else {
+        alert("Le code promo n'existe pas");
+        window.location.reload();
+      }
+    });
+    </script>
+{% endblock %}

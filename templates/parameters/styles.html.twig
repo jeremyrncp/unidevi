@@ -17,7 +17,7 @@
     <!-- Contenu -->
     <div class="row g-4">
             <!-- Col gauche -->
-            <div class="col-lg-7">
+            <div class="col-lg-7" id="styleDiv">
                 <!-- Upload Logo -->
                 <div class="mb-4">
                     <div class="label-muted mb-2 fw-semibold">Logo</div>
@@ -54,31 +54,31 @@
                     <div class="col-md-6">
                         <label class="form-label">Police</label>
                         <select id="fontSelect" class="form-select">
-                            <option value="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial">Inter</option>
-                            <option value="Roboto, Helvetica, Arial">Roboto</option>
-                            <option value="Lato, Helvetica, Arial">Lato</option>
-                            <option value="'Merriweather', serif">Merriweather (serif)</option>
-                            <option value="Poppins, Helvetica, Arial">Poppins</option>
+                            <option value="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" {% if user.stylePolice == "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" %}selected{% endif %}>Inter</option>
+                            <option value="Roboto, Helvetica, Arial" {% if user.stylePolice == "Roboto, Helvetica, Arial" %}selected{% endif %}>Roboto</option>
+                            <option value="Lato, Helvetica, Arial" {% if user.stylePolice == "Lato, Helvetica, Arial" %}selected{% endif %}>Lato</option>
+                            <option value="'Merriweather', serif" {% if user.stylePolice == "Merriweather', serif" %}selected{% endif %}>Merriweather (serif)</option>
+                            <option value="Poppins, Helvetica, Arial" {% if user.stylePolice == "Poppins, Helvetica, Arial" %}selected{% endif %}>Poppins</option>
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Couleur principale</label><br>
-                        <input id="colorPick" type="color" class="form-control form-control-color color-pick" value="#4060ff" title="Choisir la couleur">
+                        <input id="colorPick" type="color" class="form-control form-control-color color-pick" value="{% if user.styleColor is not null %}{{ user.styleColor }}{% else %}#4060ff{% endif %}" title="Choisir la couleur">
                     </div>
                 </div>
 
-                <input type="hidden" id="styleType" value="" />
+                <input type="hidden" id="styleType" value="{{ user.styleType }}" />
 
                 <!-- Bouton -->
                 <div class="mt-4">
-                    <button class="btn btn-brand w-100 w-md-auto px-5 text-white" type="button" onsubmit="save()">Enregistrer</button>
+                    <button class="btn btn-brand w-100 w-md-auto px-5 text-white" type="button" onclick="saveStyles()">Enregistrer</button>
                 </div>
             </div>
 
             <!-- Col droite : aperçu -->
             <div class="col-lg-5">
                 <div class="label-muted mb-2 fw-semibold">Aperçu</div>
-                <div class="preview p-3" id="preview" style="--accent:#4060ff;">
+                <div class="preview p-3" id="preview" style="--accent:{% if user.styleColor is not null %}{{ user.styleColor }}{% else %}#4060ff{% endif %};">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div class="h6 m-0 fw-bold">DEVIS</div>
                         <div class="bar"></div>
@@ -229,7 +229,7 @@
     // ========== Style chips ==========
     document.querySelectorAll('.style-chip').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelector("#styleType").value = btn.getAttribute("data-style").valueOf();
+        document.querySelector("#styleType").value = btn.getAttribute("data-style").valueOf()
         document.querySelectorAll('.style-chip').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         // petite variation visuelle sur l’aperçu en fonction du style
@@ -250,18 +250,26 @@
       document.getElementById('preview').style.fontFamily = fontSelect.value;
     });
 
-    const save = async () => {
+    const saveStyles = async () => {
+      const styleType = document.querySelector("#styleType").value;
+
+      const payload = {
+        "styleType": styleType,
+        "stylePolice": fontSelect.value,
+        "styleColor": color.value
+      }
+
       try {
         const r = await fetch('/api/settings/styles', {
           method: 'POST',
           headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          body: fd
+          body: JSON.stringify(payload)
         });
-        if (!r.ok) throw new Error('Upload échoué');
+        if (!r.ok) throw new Error('Sauvegarde échouée');
         const data = await r.json();
 
         alert(data.message);
-        window.reload;
+        window.location.reload();
       } catch (e) {
         alert(e.message || 'Erreur réseau');
       }

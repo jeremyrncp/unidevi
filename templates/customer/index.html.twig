@@ -1,0 +1,64 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Mes clients{% endblock %}
+
+{% block body %}
+    <div class="card-soft p-4 p-md-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <h1 class="mb-0">Mes clients</h1>
+            <a class="btn btn-brand text-white" href="{{ path("app_customer_add") }}">
+                <i class="bi bi-plus-lg me-2"></i>Ajouter un client
+            </a>
+        </div>
+
+        <!-- Barre de recherche -->
+        <div class="row align-items-center mb-3">
+            <div class="col-12 col-md-6">
+                <div class="search-wrap">
+                    <i class="bi bi-search text-secondary"></i>
+                    <input id="search" type="search" class="form-control rounded-xl"
+                           placeholder="Rechercher un client">
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th scope="col">Nom / Société</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Téléphone</th>
+                    <th scope="col">Ville</th>
+                    <th scope="col">Nb devis associés</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="clientRows">
+                {% for customer in customers %}
+                    <tr>
+                        <td class="fw-semibold">{{ customer.name }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.phone }}</td>
+                        <td>{{ customer.city }}</td>
+                        <td>{{ customer.devis|length }}</td>
+                        <td class="text-end">
+                            <form method="post" action="{{ path('app_customer_delete', {'id': customer.id}) }}" onsubmit="return confirm('Voulez-vous supprimer cette donnée ?');">
+                                <a class="btn btn-sm btn-icon" data-bs-toggle="tooltip" title="Éditer" href="{{ path("app_customer_edit", {"id": customer.id}) }}"><i class="bi bi-pencil"></i></a>
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ customer.id) }}">
+                                <button class="btn btn-sm btn-icon" data-bs-toggle="tooltip" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination simple -->
+        <div class="d-flex justify-content-end mt-2 pagination-ghost">
+            {{ knp_pagination_render(customers) }}
+        </div>
+    </div>
+
+{% endblock %}
