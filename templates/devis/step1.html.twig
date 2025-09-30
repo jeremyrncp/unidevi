@@ -1,0 +1,27 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Choix du client{% endblock %}
+
+{% block body %}
+<main class="container py-4">
+<!-- Title -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ path("app_devis") }}" class="text-decoration-none">Style</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Choix du client</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row mt-5">
+        <div class="col-6">
+            <h3 class="mb-5">Selection du client</h3>
+            {{ form(selectionCustomerForm) }}
+        </div>
+        <div class="col-6">
+            <h3 class="mb-5">Nouveau client</h3>
+            {{ form(customerForm) }}
+        </div>
+    </div>
+</main>
+{% endblock %}

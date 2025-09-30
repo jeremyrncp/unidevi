@@ -36,7 +36,7 @@ class Customer
     /**
      * @var Collection<int, Devis>
      */
-    #[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'customer')]
+    #[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'customer', cascade: ["remove"])]
     private Collection $devis;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -195,5 +195,10 @@ class Customer
         $this->owner = $owner;
 
         return $this;
+    }
+
+    public function getNameUniq(): string
+    {
+        return $this->name . "(". $this->email.")";
     }
 }

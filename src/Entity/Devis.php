@@ -69,16 +69,41 @@ class Devis
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'devis')]
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'devis', orphanRemoval: true, cascade: ["persist", "remove"])]
     private Collection $articles;
 
     #[ORM\ManyToOne(inversedBy: 'devis')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $style = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $sendedAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $color = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $font = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $countryCompany = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $postalCodeCompany = null;
+
+    /**
+     * @var Collection<int, Upsell>
+     */
+    #[ORM\OneToMany(targetEntity: Upsell::class, mappedBy: 'devis', orphanRemoval: true, cascade: ["persist", "remove"])]
+    private Collection $upsells;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->upsells = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -328,6 +353,108 @@ class Devis
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getStyle(): ?string
+    {
+        return $this->style;
+    }
+
+    public function setStyle(?string $style): static
+    {
+        $this->style = $style;
+
+        return $this;
+    }
+
+    public function getSendedAt(): ?\DateTime
+    {
+        return $this->sendedAt;
+    }
+
+    public function setSendedAt(?\DateTime $sendedAt): static
+    {
+        $this->sendedAt = $sendedAt;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): static
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getFont(): ?string
+    {
+        return $this->font;
+    }
+
+    public function setFont(?string $font): static
+    {
+        $this->font = $font;
+
+        return $this;
+    }
+
+    public function getCountryCompany(): ?string
+    {
+        return $this->countryCompany;
+    }
+
+    public function setCountryCompany(?string $countryCompany): static
+    {
+        $this->countryCompany = $countryCompany;
+
+        return $this;
+    }
+
+    public function getPostalCodeCompany(): ?string
+    {
+        return $this->postalCodeCompany;
+    }
+
+    public function setPostalCodeCompany(?string $postalCodeCompany): static
+    {
+        $this->postalCodeCompany = $postalCodeCompany;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Upsell>
+     */
+    public function getUpsells(): Collection
+    {
+        return $this->upsells;
+    }
+
+    public function addUpsell(Upsell $upsell): static
+    {
+        if (!$this->upsells->contains($upsell)) {
+            $this->upsells->add($upsell);
+            $upsell->setDevis($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUpsell(Upsell $upsell): static
+    {
+        if ($this->upsells->removeElement($upsell)) {
+            // set the owning side to null (unless already changed)
+            if ($upsell->getDevis() === $this) {
+                $upsell->setDevis(null);
+            }
+        }
 
         return $this;
     }

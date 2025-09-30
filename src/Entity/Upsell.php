@@ -22,6 +22,10 @@ class Upsell
     #[ORM\Column(nullable: true)]
     private ?float $tvaRate = null;
 
+    #[ORM\ManyToOne(inversedBy: 'upsells')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Devis $devis = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +63,18 @@ class Upsell
     public function setTvaRate(?float $tvaRate): static
     {
         $this->tvaRate = $tvaRate;
+
+        return $this;
+    }
+
+    public function getDevis(): ?Devis
+    {
+        return $this->devis;
+    }
+
+    public function setDevis(?Devis $devis): static
+    {
+        $this->devis = $devis;
 
         return $this;
     }

@@ -6,7 +6,6 @@ use App\Entity\Customer;
 use App\Entity\User;
 use App\Form\CustomerType;
 use App\Repository\CustomerRepository;
-use App\Service\FileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +22,12 @@ final class CustomerController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $customers = $customerRepository->findBy(["owner" => $user], ["id" => "DESC"]);
+        if ($request->query->get("search") !== null) {
+            $customers = $customerRepository->findByNameAndOwner($request->query->get("search"), $user);
+        } else {
+            $customers = $customerRepository->findBy(["owner" => $user], ["id" => "DESC"]);
+        }
+
 
         $pagination = $paginator->paginate(
             $customers,

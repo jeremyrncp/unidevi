@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,18 @@ class CustomerRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Customer::class);
+    }
+
+    public function findByNameAndOwner(string $name, User $owner)
+    {
+        return $this->createQueryBuilder('c')
+        ->andWhere('c.owner = :owner')
+        ->andWhere('c.name LIKE :name')
+        ->setParameter('owner', $owner)
+        ->setParameter('name', $name . '%')
+        ->getQuery()
+        ->getResult();
+
     }
 
     //    /**

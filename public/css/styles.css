@@ -150,3 +150,21 @@ body{ background:#f5f7fb; }
         transform: rotate(360deg);
     }
 }
+
+.mini{ border:1px solid #e7ecf2; border-radius:.7rem; padding:1rem; }
+.bar{ height:6px; background:#e8edf7; border-radius:4px; }
+.dot{ width:8px;height:8px;border-radius:50%; background:#98a2b3; display:inline-block; margin-right:.5rem; }
+.accent{ background:var(--accent)!important; }
+
+
+.control-pill{
+    display:flex; align-items:center; gap:.6rem; padding:.55rem .8rem; border:1px solid #e6ecf4; border-radius:.7rem; background:#fff;
+}
+.swatch{
+    width:18px;height:18px;border-radius:50%; background:var(--accent);
+    border:1px solid #d9e1ec;
+}
+
+.btn-ghost{
+    background:#fff; border:1px solid #dfe6ee; border-radius:.8rem; font-weight:600;
+}
