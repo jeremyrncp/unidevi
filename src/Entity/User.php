@@ -131,12 +131,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Customer::class, mappedBy: 'owner')]
     private Collection $customers;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $numberDevis = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $numberFactures = null;
+
+    /**
+     * @var Collection<int, Devis>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'owner', orphanRemoval: true)]
+    private Collection $invoices;
+
+
 
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->devis = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
         $this->customers = new ArrayCollection();
 
     }
@@ -602,6 +616,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $devi): static
+    {
+        if (!$this->invoices->contains($devi)) {
+            $this->invoices->add($devi);
+            $devi->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $devi): static
+    {
+        if ($this->invoices->removeElement($devi)) {
+            // set the owning side to null (unless already changed)
+            if ($devi->getOwner() === $this) {
+                $devi->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Customer>
      */
     public function getCustomers(): Collection
@@ -627,6 +671,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $customer->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumberDevis(): ?int
+    {
+        return $this->numberDevis;
+    }
+
+    public function setNumberDevis(?int $numberDevis): static
+    {
+        $this->numberDevis = $numberDevis;
+
+        return $this;
+    }
+
+    public function getNumberFactures(): ?int
+    {
+        return $this->numberFactures;
+    }
+
+    public function setNumberFactures(?int $numberFactures): static
+    {
+        $this->numberFactures = $numberFactures;
 
         return $this;
     }

@@ -1,0 +1,230 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Ton devis — Mode Manuel{% endblock %}
+
+{% block body %}
+<main class="container py-4">
+    <form method="post">
+        <h2 class="fw-bold">Ton devis — Mode Manuel</h2>
+        <p class="lead lead-muted">Ajoute tes prestations une par une. Tout est modifiable.</p>
+
+
+        <!-- Titre du devis -->
+        <h5 class="mt-4 mb-3">Titre du devis</h5>
+        <input type="text" name="titleDevis" placeholder="Titre du devis" class="form-control" />
+
+        <!-- Taux de TVA -->
+        <h5 class="mt-4 mb-3">Taux de TVA</h5>
+        <select id="preferences_devis_tvaRate" name="tvaRate" class="form-select"><option value="0" {% if user.tvaRate == 0 %}selected{% endif %}>0 %</option><option value="5.5" {% if user.tvaRate == 5.5 %}selected{% endif %}>5.5 %</option><option value="10" {% if user.tvaRate == 10 %}selected{% endif %}>10 %</option><option value="20" {% if user.tvaRate == 20 %}selected{% endif %}>20 %</option></select>
+
+
+        <!-- Prestations principales -->
+        <h5 class="mt-4 mb-3">Prestations principales</h5>
+
+        <div id="mainList">
+        </div>
+
+        <div class="mt-2">
+            <a href="#" class="add-link" data-bs-toggle="modal" data-bs-target="#addMainModal">
+                <i class="bi bi-plus-lg me-1"></i>Ajouter une prestation
+            </a>
+        </div>
+
+        <!-- Upsells -->
+        <h5 class="mt-4 mb-1">Options recommandées (Upsells)</h5>
+        <p class="text-secondary mb-3">Ces options sont facultatives, tu peux les cocher ou les supprimer.</p>
+
+        <div id="upsellList">
+        </div>
+
+        <div class="mt-2">
+            <a href="#" class="add-link" data-bs-toggle="modal" data-bs-target="#addUpsellModal">
+                <i class="bi bi-plus-lg me-1"></i>Ajouter un upsell
+            </a>
+        </div>
+
+        <!-- Totaux -->
+        <hr class="divider my-4">
+        <div class="d-flex justify-content-between">
+            <div class="text-secondary">Prestations principales :</div>
+            <div class="totals"><span id="totalMain">0,00</span> € HT</div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="text-secondary">Options (upsells) :</div>
+            <div class="totals"><span id="totalUpsell">0,00</span> € HT</div>
+        </div>
+        <div class="d-flex justify-content-between fs-5 mt-2">
+            <div class="fw-semibold">Sous-total :</div>
+            <div class="fw-bold"><span id="subtotal">0,00</span> € HT</div>
+        </div>
+
+        <input type="hidden" name="submitType" value="modeManuel" />
+
+        <div class="d-flex justify-content-end mt-4">
+            <button class="btn btn-brand text-white">Continuer</button>
+        </div>
+    </form>
+
+    <!-- MODAL: Ajouter prestation principale -->
+    <div class="modal fade" id="addMainModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" id="formAddMain">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter une prestation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Titre</label>
+                        <input class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" rows="2"></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Prix HT (€)</label>
+                        <input class="form-control" type="number" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Annuler</button>
+                    <button class="btn btn-primary" type="submit">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Ajouter upsell -->
+    <div class="modal fade" id="addUpsellModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" id="formAddUpsell">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter un upsell</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Titre</label>
+                        <input class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Bénéfice (phrase courte)</label>
+                        <textarea class="form-control" rows="2"></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Prix HT (€)</label>
+                        <input class="form-control" type="number" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Annuler</button>
+                    <button class="btn btn-primary text-white" type="submit">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    let services = {};
+    let upsells = {};
+
+    const nf = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function updateTotals(){
+      const sum = sel => [...document.querySelectorAll(sel+':checked')]
+      .map(i => +i.dataset.price || 0).reduce((a,b)=>a+b,0);
+
+      const totalMain   = sum('.main-item');
+      const totalUpsell = sum('.upsell-item');
+      document.getElementById('totalMain').textContent   = nf.format(totalMain);
+      document.getElementById('totalUpsell').textContent = nf.format(totalUpsell);
+      document.getElementById('subtotal').textContent    = nf.format(totalMain + totalUpsell);
+    }
+
+    // toggle style upsell checked
+    function syncUpsellStyles(){
+      document.querySelectorAll('#upsellList .line.upsell').forEach(l => {
+        const input = l.querySelector('.upsell-item');
+        l.classList.toggle('checked', input.checked);
+
+      });
+    }
+
+    document.addEventListener('change', e => {
+      if(e.target.matches('.main-item, .upsell-item')){
+        updateTotals();
+        if(e.target.matches('.upsell-item')) syncUpsellStyles();
+      }
+    });
+    // init
+    updateTotals(); syncUpsellStyles();
+
+    // -------- Add prestation principale ----------
+    document.getElementById('formAddMain').addEventListener('submit', e => {
+      e.preventDefault();
+      const [titleEl, descEl, priceEl] = e.target.querySelectorAll('input, textarea, input[type="number"]');
+      const title = titleEl.value.trim(), desc = descEl.value.trim(), price = +priceEl.value;
+      const row = document.createElement('div');
+      let uniquid = Date.now() + Math.floor(Math.random() * 100);
+      row.className = 'line circle';
+      row.innerHTML = `
+        <div class="d-flex gap-3">
+          <div class="form-check mt-1">
+            <input class="form-check-input main-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
+          </div>
+          <div>
+            <div class="title"></div>
+            <div class="desc"></div>
+          </div>
+
+        <div class="price"><span data-eur>${price}</span> € HT</div>
+          <input type="hidden" name="title-` + uniquid + `" value="${title}" />
+          <input type="hidden" name="description-` + uniquid + `" value="${desc}" />
+          <input type="hidden" name="price-` + uniquid + `" value="${price}" />
+          <input type="hidden" name="type-` + uniquid + `" value="service" />
+        </div>
+      `;
+      row.querySelector('.title').textContent = title || 'Nouvelle prestation';
+      row.querySelector('.desc').textContent  = desc;
+      document.getElementById('mainList').appendChild(row);
+      bootstrap.Modal.getInstance(document.getElementById('addMainModal')).hide();
+      e.target.reset();
+      updateTotals();
+    });
+
+    // -------- Add upsell ----------
+    document.getElementById('formAddUpsell').addEventListener('submit', e => {
+      e.preventDefault();
+      const [titleEl, descEl, priceEl] = e.target.querySelectorAll('input, textarea, input[type="number"]');
+      const title = titleEl.value.trim(), desc = descEl.value.trim(), price = +priceEl.value;
+      const row = document.createElement('div');
+      let uniquid = Date.now() + Math.floor(Math.random() * 100);
+      row.className = 'line upsell checked';
+      row.innerHTML = `
+        <div class="d-flex gap-3">
+          <div class="form-check mt-1">
+            <input class="form-check-input upsell-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
+          </div>
+          <div>
+            <div class="title"></div>
+            <div class="desc"></div>
+          </div>
+          <div class="price"><span data-eur>${price}</span> € HT</div>
+          <input type="hidden" name="title-` + uniquid + `" value="${title}" />
+          <input type="hidden" name="description-` + uniquid + `" value="${desc}" />
+          <input type="hidden" name="price-` + uniquid + `" value="${price}" />
+          <input type="hidden" name="type-` + uniquid + `" value="upsell" />
+
+        </div>`;
+      row.querySelector('.title').textContent = title || 'Nouvelle option';
+      row.querySelector('.desc').textContent  = desc;
+      document.getElementById('upsellList').appendChild(row);
+      bootstrap.Modal.getInstance(document.getElementById('addUpsellModal')).hide();
+      e.target.reset();
+      syncUpsellStyles(); updateTotals();
+    });
+
+    </script>
+</main>
+{% endblock %}

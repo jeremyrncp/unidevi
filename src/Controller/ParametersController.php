@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\FiscalInformationsType;
 use App\Form\PreferencesDevisType;
+use App\Form\PreferencesNumerotationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +64,27 @@ final class ParametersController extends AbstractController
 
         return $this->render('parameters/styles.html.twig', [
             'user' => $user,
+        ]);
+    }
+
+    #[Route('/parameters/numerotation', name: 'app_parameters_numerotation')]
+    public function numerotation(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(PreferencesNumerotationType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash("message", "Préférences de numérotation mises à jour");
+        }
+
+        return $this->render('parameters/numerotation.html.twig', [
+            'user' => $user,
+            "form" => $form->createView()
         ]);
     }
 

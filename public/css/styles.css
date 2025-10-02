@@ -168,3 +168,32 @@ body{ background:#f5f7fb; }
 .btn-ghost{
     background:#fff; border:1px solid #dfe6ee; border-radius:.8rem; font-weight:600;
 }
+
+
+.lead-muted{ color:#6b7280; }
+
+/* lignes */
+.line{
+    border:1px solid #e6ecf4; border-radius:.8rem; padding:1rem 1rem;
+    display:flex; gap:1rem; align-items:flex-start; justify-content:space-between;
+    background:#fff; transition:.15s;
+}
+.line + .line{ margin-top:.75rem; }
+.line .title{ font-weight:700; }
+.line .desc{ color:#6b7280; margin-top:.25rem; }
+.price{ white-space:nowrap; font-weight:600; align-items: flex-end; }
+.line.upsell{ background:#f9fbff; border-color:#dfe7ff; }
+.line.upsell.checked{ background:#eef3ff; border-color:#cdd8ff; }
+
+.add-link{ color:var(--accent); font-weight:600; text-decoration:none; }
+.add-link:hover{ text-decoration:underline; }
+
+.totals{ font-weight:700; }
+.divider{ border-top:1px solid #edf1f6; }
+
+.li-row{ display:flex; justify-content:space-between; gap:1rem; }
+.li-row + .li-row{ margin-top:.35rem; }
+.total-card{
+    border-top:1px solid #edf1f6; padding-top:.75rem;
+}
+.stars i{ color:#f59e0b; }

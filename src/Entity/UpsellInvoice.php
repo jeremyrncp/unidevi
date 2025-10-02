@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
+use App\Repository\UpsellInvoiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ArticleRepository::class)]
-class Article
+#[ORM\Entity(repositoryClass: UpsellInvoiceRepository::class)]
+class UpsellInvoice
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,8 +23,9 @@ class Article
     #[ORM\Column(nullable: true)]
     private ?float $tvaRate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'articles')]
-    private ?Devis $devis = null;
+    #[ORM\ManyToOne(inversedBy: 'upsells')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Invoice $invoice = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -70,14 +71,14 @@ class Article
         return $this;
     }
 
-    public function getDevis(): ?Devis
+    public function getDevis(): ?Invoice
     {
-        return $this->devis;
+        return $this->invoice;
     }
 
-    public function setDevis(?Devis $devis): static
+    public function setDevis(?Invoice $invoice): static
     {
-        $this->devis = $devis;
+        $this->invoice = $invoice;
 
         return $this;
     }

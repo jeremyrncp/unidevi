@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UpsellRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UpsellRepository::class)]
@@ -25,6 +26,9 @@ class Upsell
     #[ORM\ManyToOne(inversedBy: 'upsells')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Devis $devis = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     public function getId(): ?int
     {
@@ -75,6 +79,18 @@ class Upsell
     public function setDevis(?Devis $devis): static
     {
         $this->devis = $devis;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

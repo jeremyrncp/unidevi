@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
+use App\Repository\ArticleInvoiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ArticleRepository::class)]
-class Article
+#[ORM\Entity(repositoryClass: ArticleInvoiceRepository::class)]
+class ArticleInvoice
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,7 +24,7 @@ class Article
     private ?float $tvaRate = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
-    private ?Devis $devis = null;
+    private ?Invoice $invoice = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -70,14 +70,14 @@ class Article
         return $this;
     }
 
-    public function getDevis(): ?Devis
+    public function getInvoice(): ?Invoice
     {
-        return $this->devis;
+        return $this->invoice;
     }
 
-    public function setDevis(?Devis $devis): static
+    public function setInvoice(?Invoice $devis): static
     {
-        $this->devis = $devis;
+        $this->invoice = $invoice;
 
         return $this;
     }

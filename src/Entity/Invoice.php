@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DevisRepository::class)]
-class Devis
+class Invoice
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -60,7 +60,7 @@ class Devis
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $siretCustomer = null;
 
-    #[ORM\ManyToOne(inversedBy: 'devis')]
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
     private ?Customer $customer = null;
 
     #[ORM\Column(nullable: true)]
@@ -69,7 +69,7 @@ class Devis
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'devis', orphanRemoval: true, cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(targetEntity: ArticleInvoice::class, mappedBy: 'invoice', orphanRemoval: true, cascade: ["persist", "remove"])]
     private Collection $articles;
 
     #[ORM\ManyToOne(inversedBy: 'devis')]
@@ -97,7 +97,7 @@ class Devis
     /**
      * @var Collection<int, Upsell>
      */
-    #[ORM\OneToMany(targetEntity: Upsell::class, mappedBy: 'devis', orphanRemoval: true, cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(targetEntity: UpsellInvoice::class, mappedBy: 'invoice', orphanRemoval: true, cascade: ["persist", "remove"])]
     private Collection $upsells;
 
     #[ORM\Column(nullable: true)]

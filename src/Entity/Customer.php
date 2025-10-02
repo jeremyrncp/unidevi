@@ -49,9 +49,15 @@ class Customer
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'customer', cascade: ["remove"])]
+    private Collection $invoices;
+
+
     public function __construct()
     {
         $this->devis = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -152,6 +158,37 @@ class Customer
     public function removeDevi(Devis $devi): static
     {
         if ($this->devis->removeElement($devi)) {
+            // set the owning side to null (unless already changed)
+            if ($devi->getCustomer() === $this) {
+                $devi->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $devi): static
+    {
+        if (!$this->invoices->contains($devi)) {
+            $this->invoices->add($devi);
+            $devi->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $devi): static
+    {
+        if ($this->invoices->removeElement($devi)) {
             // set the owning side to null (unless already changed)
             if ($devi->getCustomer() === $this) {
                 $devi->setCustomer(null);
