@@ -106,6 +106,9 @@ class Devis
     #[ORM\Column(nullable: true)]
     private ?\DateTime $archivedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $validityDevis = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -115,6 +118,10 @@ class Devis
     public function getId(): ?int
     {
         return $this->id;
+    }
+    public function setId(?int $id)
+    {
+        $this->id = $id;
     }
 
     public function getName(): ?string
@@ -487,5 +494,41 @@ class Devis
         $this->archivedAt = $archivedAt;
 
         return $this;
+    }
+
+    public function getValidityDevis(): ?int
+    {
+        return $this->validityDevis;
+    }
+
+    public function setValidityDevis(?int $validityDevis): static
+    {
+        $this->validityDevis = $validityDevis;
+
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        if ($this->archivedAt !== null) {
+            return 'Archivé';
+        } else if ($this->sendedAt !== null) {
+            return "Finalisé";
+        } else {
+            return 'Brouillon';
+        }
+    }
+
+    public function getTotalsTTC()
+    {
+        $total = 0;
+        foreach ($this->articles as $article) {
+            $total += $article->getPrice();
+        }
+        foreach ($this->upsells as $upsell) {
+            $total += $upsell->getPrice();
+        }
+
+        return ($total + ($total * $this->tvaRate / 100))/100;
     }
 }

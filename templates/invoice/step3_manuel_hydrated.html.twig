@@ -1,0 +1,100 @@
+    <form method="post">
+        <h2 class="fw-bold">Ta facutre — Mode IA</h2>
+        <p class="lead lead-muted">Gère tes prestations une par une.</p>
+
+
+        <!-- Titre du devis -->
+        <h5 class="mt-4 mb-3">Titre de la facture</h5>
+        <input type="text" name="titleDevis" placeholder="Titre de la facture" class="form-control" value="{{ titleDevis }}" />
+
+        <!-- Taux de TVA -->
+        <h5 class="mt-4 mb-3">Taux de TVA</h5>
+        <select id="preferences_devis_tvaRate" name="tvaRate" class="form-select"><option value="0" {% if user.tvaRate == 0 %}selected{% endif %}>0 %</option><option value="5.5" {% if user.tvaRate == 5.5 %}selected{% endif %}>5.5 %</option><option value="10" {% if user.tvaRate == 10 %}selected{% endif %}>10 %</option><option value="20" {% if user.tvaRate == 20 %}selected{% endif %}>20 %</option></select>
+
+
+        <!-- Prestations principales -->
+        <h5 class="mt-4 mb-3">Prestations principales</h5>
+
+        <div id="mainList">
+            {% if services is defined %}
+                {% for service in services %}
+
+                    <div class="d-flex gap-3">
+                        <div class="form-check mt-1">
+                            <input class="form-check-input main-item" name="checkbox-{{service.id}}" type="checkbox" checked data-price="{{service.price}}">
+                        </div>
+                        <div>
+                            <div class="title">{{service.description}}</div>
+                            <div class="desc">&nbsp;</div>
+                        </div>
+
+                        <div class="price"><span data-eur>{{service.price}}</span> € HT</div>
+                        <input type="hidden" name="title-{{service.id}}" value="{{service.description}}" />
+                        <input type="hidden" name="description-{{service.id}}" value="&nbsp;" />
+                        <input type="hidden" name="price-{{service.id}}" value="{{service.price}}" />
+                        <input type="hidden" name="type-{{service.id}}" value="service" />
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="mt-2">
+            <a href="#" class="add-link" data-bs-toggle="modal" data-bs-target="#addMainModal">
+                <i class="bi bi-plus-lg me-1"></i>Ajouter une prestation
+            </a>
+        </div>
+
+        <!-- Upsells -->
+        <h5 class="mt-4 mb-1">Options recommandées (Upsells)</h5>
+        <p class="text-secondary mb-3">Ces options sont facultatives, tu peux les cocher ou les supprimer.</p>
+
+        <div id="upsellList">
+            {% if upsells is defined %}
+                {% for upsell in upsells %}
+
+                    <div class="d-flex gap-3">
+                        <div class="form-check mt-1">
+                            <input class="form-check-input upsell-item" name="checkbox-{{upsell.id}}" type="checkbox" checked data-price="{{upsell.price}}">
+                        </div>
+                        <div>
+                            <div class="title">{{upsell.description}}</div>
+                            <div class="desc">&nbsp;</div>
+                        </div>
+
+                        <div class="price"><span data-eur>{{upsell.price}}</span> € HT</div>
+                        <input type="hidden" name="title-{{upsell.id}}" value="{{upsell.description}}" />
+                        <input type="hidden" name="description-{{upsell.id}}" value="&nbsp;" />
+                        <input type="hidden" name="price-{{upsell.id}}" value="{{upsell.price}}" />
+                        <input type="hidden" name="type-{{upsell.id}}" value="upsell" />
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="mt-2">
+            <a href="#" class="add-link" data-bs-toggle="modal" data-bs-target="#addUpsellModal">
+                <i class="bi bi-plus-lg me-1"></i>Ajouter un upsell
+            </a>
+        </div>
+
+        <!-- Totaux -->
+        <hr class="divider my-4">
+        <div class="d-flex justify-content-between">
+            <div class="text-secondary">Prestations principales :</div>
+            <div class="totals"><span id="totalMain">{% if sumServices is defined %}{{ sumServices }}{% else %}0,00{% endif %}</span> € HT</div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="text-secondary">Options (upsells) :</div>
+            <div class="totals"><span id="totalUpsell">{% if sumUpsells is defined %}{{ sumUpsells }}{% else %}0,00{% endif %}</span> € HT</div>
+        </div>
+        <div class="d-flex justify-content-between fs-5 mt-2">
+            <div class="fw-semibold">Sous-total :</div>
+            <div class="fw-bold"><span id="subtotal">{% if sumUpsells is defined %}{{ sumUpsells+sumServices }}{% else %}0,00{% endif %}</span> € HT</div>
+        </div>
+
+        <input type="hidden" name="submitType" value="modeManuel" />
+
+        <div class="d-flex justify-content-end mt-4">
+            <button class="btn btn-brand text-white">Continuer</button>
+        </div>
+    </form>

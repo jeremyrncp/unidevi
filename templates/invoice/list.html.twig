@@ -1,0 +1,119 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Mes factures{% endblock %}
+
+{% block body %}
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="fw-bold m-0">Mes factures</h1>
+        <a href="{{ path("app_invoices") }}" class="btn btn-primary btn-lg"><i class="bi bi-plus-lg me-2"></i>Créer une facutre</a>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap mb-3">
+        <input id="search" type="search" class="form-control form-control-lg search-input"
+               placeholder="Rechercher un devis par numéro ou client">
+    </div>
+
+    <!-- Filters -->
+    <div class="row">
+        <div class="col-3">
+            <select id="fStatus" class="form-select filter-select">
+                <option value="">Tous les statuts</option>
+                <option value="Brouillon">Brouillon</option>
+                <option value="Finalisé">Finalisé</option>
+                <option value="Archivé">Archivé</option>
+
+            </select>
+        </div>
+        <div class="col-3">
+            <select id="fPeriod" class="form-select filter-select">
+                <option value="">Toutes les périodes</option>
+                {% for period in periods %}
+                    <option value="{{ period }}">{{ period|monthlyzer }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-3">
+            <select id="fTto" class="form-select filter-select">
+                <option value="">Tous les taux + %</option>
+                <option value="0">0%</option>
+                <option value="5.5">5.5%</option>
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>N° facture</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th class="text-end">Montant TTC</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="rows">
+
+                {% for devi in devis %}
+                    <tr data-status="{{  devi.status }}" data-date="{{  devi.createdAt|date("Y-m-d") }}" data-tto="{{  devi.tvaRate }}">
+                        <td>#{{  devi.number }}</td>
+                        <td>{{  devi.nameCustomer }}</td>
+                        <td>{{  devi.createdAt|date("d/m/Y") }}</td>
+                        <td>{{  devi.status }}</td>
+                        <td class="text-end">{{  devi.totalsTTC }} €</td>
+                        <td class="text-center">
+                            <a href="{{ path("app_invoice_step4", {"id": devi.id}) }}" class="text-body me-2" title="Voir"><i class="bi bi-eye"></i></a>
+                            <a href="{{ path("app_invoice_duplication", {"id": devi.id}) }}" class="text-body" title="Dupliquer"><i class="bi bi-arrow-repeat"></i></a>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end mt-2 pagination-ghost">
+        {{ knp_pagination_render(devis) }}
+    </div>
+
+    <script type="text/javascript">
+    const q = document.getElementById('search');
+    const fStatus = document.getElementById('fStatus');
+    const fPeriod = document.getElementById('fPeriod');
+    const fTto = document.getElementById('fTto');
+    const rows = [...document.querySelectorAll('#rows tr')];
+
+    function matches(row){
+      // text search in N° devis or Client
+      const hay = (row.cells[0].textContent + ' ' + row.cells[1].textContent).toLowerCase();
+      const okText = hay.includes(q.value.trim().toLowerCase());
+
+      // status
+      const okStatus = !fStatus.value || row.dataset.status === fStatus.value;
+
+      // period: yyyy-mm from data-date
+      const period = (row.dataset.date || '').slice(0,7);
+      const okPeriod = !fPeriod.value || period === fPeriod.value;
+
+      // tto (custom field)
+      const okTto = !fTto.value || row.dataset.tto === fTto.value;
+
+      return okText && okStatus && okPeriod && okTto;
+    }
+
+    function applyFilters(){
+      rows.forEach(r => r.style.display = matches(r) ? '' : 'none');
+    }
+
+    [q, fStatus, fPeriod, fTto].forEach(el => el.addEventListener('input', applyFilters));
+    applyFilters();
+    </script>
+</main>
+{% endblock %}

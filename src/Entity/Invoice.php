@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\DevisRepository;
+use App\Repository\InvoiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DevisRepository::class)]
+#[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 class Invoice
 {
     #[ORM\Id]
@@ -106,6 +107,9 @@ class Invoice
     #[ORM\Column(nullable: true)]
     private ?\DateTime $archivedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $validityDevis = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -115,6 +119,11 @@ class Invoice
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id)
+    {
+        $this->id = $id;
     }
 
     public function getName(): ?string
@@ -322,29 +331,29 @@ class Invoice
     }
 
     /**
-     * @return Collection<int, Article>
+     * @return Collection<int, ArticleInvoice>
      */
     public function getArticles(): Collection
     {
         return $this->articles;
     }
 
-    public function addArticle(Article $article): static
+    public function addArticle(ArticleInvoice $article): static
     {
         if (!$this->articles->contains($article)) {
             $this->articles->add($article);
-            $article->setDevis($this);
+            $article->setInvoice($this);
         }
 
         return $this;
     }
 
-    public function removeArticle(Article $article): static
+    public function removeArticle(ArticleInvoice $article): static
     {
         if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
-            if ($article->getDevis() === $this) {
-                $article->setDevis(null);
+            if ($article->getInvoice() === $this) {
+                $article->setInvoice(null);
             }
         }
 
@@ -436,14 +445,14 @@ class Invoice
     }
 
     /**
-     * @return Collection<int, Upsell>
+     * @return Collection<int, UpsellInvoice>
      */
     public function getUpsells(): Collection
     {
         return $this->upsells;
     }
 
-    public function addUpsell(Upsell $upsell): static
+    public function addUpsell(UpsellInvoice $upsell): static
     {
         if (!$this->upsells->contains($upsell)) {
             $this->upsells->add($upsell);
@@ -453,7 +462,7 @@ class Invoice
         return $this;
     }
 
-    public function removeUpsell(Upsell $upsell): static
+    public function removeUpsell(UpsellInvoice $upsell): static
     {
         if ($this->upsells->removeElement($upsell)) {
             // set the owning side to null (unless already changed)
@@ -487,5 +496,84 @@ class Invoice
         $this->archivedAt = $archivedAt;
 
         return $this;
+    }
+
+    public function getValidityDevis(): ?int
+    {
+        return $this->validityDevis;
+    }
+
+    public function setValidityDevis(?int $validityDevis): static
+    {
+        $this->validityDevis = $validityDevis;
+
+        return $this;
+    }
+
+    public function hydrate(Devis $devis, int $numberInvoice)
+    {
+        $this->number = $numberInvoice;
+        $this->name = $devis->getName();
+        $this->createdAt = new \DateTime();
+        $this->logo = $devis->getLogo();
+        $this->nameCompany = $devis->getNameCompany();
+        $this->address = $devis->getAddress();
+        $this->siretCompany = $devis->getSiretCompany();
+        $this->phoneNumberCompany = $devis->getPhoneNumberCompany();
+        $this->postalCodeCompany = $devis->getPostalCodeCompany();
+        $this->emailCompany = $devis->getEmailCompany();
+        $this->owner          = $devis->getOwner();
+        $this->style          = $devis->getStyle();
+        $this->color          = $devis->getColor();
+        $this->font           = $devis->getFont();
+        $this->countryCompany = $devis->getCountryCompany();
+        $this->tvaRate        = $devis->getTvaRate();
+        $this->validityDevis  = $devis->getValidityDevis();
+        $this->mentionsLegales = $devis->getMentionsLegales();
+        $this->nameCustomer = $devis->getNameCustomer();
+        $this->customer = $devis->getCustomer();
+        $this->siretCustomer = $devis->getSiretCustomer();
+        $this->addressCustomer = $devis->getAddressCustomer();
+        $this->cityCustomer = $devis->getCityCustomer();
+        $this->postalCodeCustomer = $devis->getPostalCodeCustomer();
+
+        /** @var Article $article */
+        foreach ($devis->getArticles() as $article) {
+            $articleInvoice = new ArticleInvoice();
+            $articleInvoice->hydrate($article);
+            $this->addArticle($articleInvoice);
+        }
+
+        /** @var Upsell $article */
+        foreach ($devis->getUpsells() as $upsell) {
+            $upsellInvoice = new UpsellInvoice();
+            $upsellInvoice->hydrate($upsell);
+            $this->addUpsell($upsellInvoice);
+        }
+    }
+
+
+    public function getStatus(): string
+    {
+        if ($this->archivedAt !== null) {
+            return 'Archivé';
+        } else if ($this->sendedAt !== null) {
+            return "Finalisé";
+        } else {
+            return 'Brouillon';
+        }
+    }
+
+    public function getTotalsTTC()
+    {
+        $total = 0;
+        foreach ($this->articles as $article) {
+            $total += $article->getPrice();
+        }
+        foreach ($this->upsells as $upsell) {
+            $total += $upsell->getPrice();
+        }
+
+        return ($total + ($total * $this->tvaRate / 100))/100;
     }
 }

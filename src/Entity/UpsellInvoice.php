@@ -35,6 +35,11 @@ class UpsellInvoice
         return $this->id;
     }
 
+    public function setId(?int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -93,5 +98,12 @@ class UpsellInvoice
         $this->description = $description;
 
         return $this;
+    }
+
+    public function hydrate(Upsell $upsell)
+    {
+        $this->name = $upsell->getName();
+        $this->description = $upsell->getDescription();
+        $this->price = $upsell->getPrice();
     }
 }

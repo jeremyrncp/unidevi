@@ -34,6 +34,11 @@ class ArticleInvoice
         return $this->id;
     }
 
+    public function setId(?int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -77,7 +82,7 @@ class ArticleInvoice
 
     public function setInvoice(?Invoice $devis): static
     {
-        $this->invoice = $invoice;
+        $this->invoice = $devis;
 
         return $this;
     }
@@ -92,5 +97,12 @@ class ArticleInvoice
         $this->description = $description;
 
         return $this;
+    }
+
+    public function hydrate(Article $article)
+    {
+        $this->name = $article->getName();
+        $this->description = $article->getDescription();
+        $this->price = $article->getPrice();
     }
 }

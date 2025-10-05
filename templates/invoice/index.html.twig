@@ -1,0 +1,139 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Choisis un style de ta facture{% endblock %}
+
+{% block body %}
+<main class="container py-4">
+<!-- Title -->
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold">Choisis un style de ta facture</h1>
+        <p class="lead lead-muted mb-0">
+            Le style impacte la présentation et la mise en page de ta facture. Tu pourras le changer plus tard.
+        </p>
+    </div>
+
+    <!-- Cards -->
+    <form id="styleForm" method="post">
+        <div class="row g-3 g-lg-4 mb-4">
+            <!-- Épure -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="style-card p-3 d-block" data-style="epure">
+                    <div class="mini mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="fw-bold">FACTURE</div>
+                            <div class="bar" style="width:60px"></div>
+                        </div>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="d-flex align-items-center"><span class="dot"></span><div class="bar" style="width:70%"></div></div>
+                            <div class="d-flex align-items-center"><span class="dot"></span><div class="bar" style="width:55%"></div></div>
+                            <div class="d-flex align-items-center"><span class="dot"></span><div class="bar" style="width:45%"></div></div>
+                        </div>
+                    </div>
+                    <div class="fw-semibold fs-5 mb-1">Épure</div>
+                    <div class="text-secondary small">Sobre · Rapide · Lisible</div>
+                    <div class="card-footer-radio">
+                        <input class="form-check-input me-2" type="radio" name="style" value="epure">
+                        <span class="small">Sélectionner ce style</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Signature -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="style-card p-3 d-block active" data-style="signature">
+                    <div class="mini mb-3">
+                        <div class="fw-bold mb-2">FACTURE</div>
+                        <div class="bar accent mb-2" style="width:80%"></div>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="d-flex align-items-center"><span class="dot"></span><div class="bar" style="width:75%"></div></div>
+                            <div class="d-flex align-items-center"><span class="dot"></span><div class="bar" style="width:58%"></div></div>
+                            <div class="d-flex align-items-center"><span class="dot"></span><div class="bar" style="width:42%"></div></div>
+                        </div>
+                    </div>
+                    <div class="fw-semibold fs-5 mb-1">Signature</div>
+                    <div class="text-secondary small">Élégant · Vendeur · Impactant</div>
+                    <div class="card-footer-radio">
+                        <input class="form-check-input me-2" type="radio" name="style" value="signature" checked>
+                        <span class="small">Sélectionner ce style</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Structura -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="style-card p-3 d-block" data-style="structura">
+                    <div class="mini mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="fw-bold">FACTURE</div>
+                            <div class="bar" style="width:60px"></div>
+                        </div>
+                        <div class="bar mb-2" style="width:70%"></div>
+                        <div class="bar mb-2" style="width:50%"></div>
+                        <div class="bar mb-0" style="width:85%"></div>
+                    </div>
+                    <div class="fw-semibold fs-5 mb-1">Structura</div>
+                    <div class="text-secondary small">Normé · Organisé · Technique</div>
+                    <div class="card-footer-radio">
+                        <input class="form-check-input me-2" type="radio" name="style" value="structura">
+                        <span class="small">Sélectionner ce style</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Immo+ -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="style-card p-3 d-block" data-style="immo">
+                    <div class="mini mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="fw-bold">FACTURE</div>
+                            <div class="bar" style="width:60px"></div>
+                        </div>
+                        <div class="bar mb-2" style="width:88%"></div>
+                        <div class="d-flex gap-2">
+                            <div class="bar" style="width:55%"></div>
+                            <div class="bar" style="width:25%"></div>
+                        </div>
+                    </div>
+                    <div class="fw-semibold fs-5 mb-1">Immo+</div>
+                    <div class="text-secondary small">Par pièces · Contrôles · Finitions</div>
+                    <div class="card-footer-radio">
+                        <input class="form-check-input me-2" type="radio" name="style" value="immo">
+                        <span class="small">Sélectionner ce style</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="d-flex flex-wrap align-items-center gap-3 gap-md-4">
+            <div class="control-pill">
+                <span class="swatch" id="swatch"></span>
+                <span>Couleur d’accent</span>
+                <input type="color" id="accent" name="colorAccent" class="form-control form-control-color ms-1" value="{% if user.styleColor is not null %}{{ user.styleColor }}{% else %}#3558ff{% endif %}" title="Couleur d’accent">
+            </div>
+
+            <div class="control-pill">
+                <label for="fontSelect" class="me-1 mb-0">Police</label>
+                <select id="fontSelect" class="form-select form-select-sm" name="font">
+                    <option value="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" {% if user.stylePolice == "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" %}selected{% endif %}>Inter</option>
+                    <option value="Roboto, Helvetica, Arial" {% if user.stylePolice == "Roboto, Helvetica, Arial" %}selected{% endif %}>Roboto</option>
+                    <option value="Lato, Helvetica, Arial" {% if user.stylePolice == "Lato, Helvetica, Arial" %}selected{% endif %}>Lato</option>
+                    <option value="'Merriweather', serif" {% if user.stylePolice == "Merriweather', serif" %}selected{% endif %}>Merriweather (serif)</option>
+                    <option value="Poppins, Helvetica, Arial" {% if user.stylePolice == "Poppins, Helvetica, Arial" %}selected{% endif %}>Poppins</option>
+                </select>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="rememberDefault" id="rememberDefault">
+                <label class="form-check-label" for="rememberDefault">Mémoriser comme style par défaut</label>
+            </div>
+
+            <div class="ms-auto">
+                <button class="btn btn-brand text-white" type="submit">Continuer</button>
+            </div>
+        </div>
+
+        <input type="hidden" name="customer" value="{{ customer }}" />
+    </form>
+</main>
+{% endblock %}

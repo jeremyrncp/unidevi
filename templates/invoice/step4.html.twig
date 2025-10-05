@@ -1,15 +1,15 @@
 {% extends 'base_dashboard.html.twig' %}
 
-{% block title %}Ton devis — Mode Manuel{% endblock %}
+{% block title %}Ta facture{% endblock %}
 
 {% block body %}
 <main class="container py-4">
     <div class="card-soft p-4 p-md-5">
             <!-- Header -->
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <h2 class="mb-0">Aperçu du devis</h2>
+                <h2 class="mb-0">Aperçu de la facutre</h2>
                 <div class="text-end small text-secondary">
-                    <div>Devis <strong>#{{ devis.number }}</strong> — <span class="text-muted">{% if devis.archivedAt is not null %}Archivé{% elseif devis.sendedAt is not null %}Envoyé{% else %}Brouillon{% endif %}</span></div>
+                    <div>Facture <strong>#{{ devis.number }}</strong> — <span class="text-muted">{% if devis.archivedAt is not null %}Archivé{% elseif devis.sendedAt is not null %}Envoyé{% else %}Brouillon{% endif %}</span></div>
                 </div>
             </div>
             <hr class="divider">
@@ -43,11 +43,10 @@
                     </div>
                 </div>
                 <div class="col-md-4 text-md-end d-flex d-md-block gap-2 no-print">
-                    <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_devis_view_send", {"id": devis.id}) }}"><i class="bi bi-envelope-fill me-1"></i>Envoyer</a>
-                    <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_devis_transform_invoice", {"id": devis.id}) }}"><i class="bi bi-file-earmark-check-fill me-1"></i>Transformer en facture</a>
-                    <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_devis_duplication", {"id": devis.id}) }}"><i class="bi bi-files me-1"></i>Dupliquer</a>
-                    <a class="btn btn-ghost w-100 mb-2" href="{{ path("app_devis_duplication", {"id": devis.id}) }}"><i class="bi bi-archive me-1"></i>Archiver</a>
-                    <a class="btn btn-ghost w-100" href="{{ path("app_devis_change_style", {"id": devis.id}) }}"><i class="bi bi-brush me-1"></i>Changer de style</a>
+                    <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_invoice_view_send", {"id": devis.id}) }}"><i class="bi bi-envelope-fill me-1"></i>Envoyer</a>
+                    <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_invoice_duplication", {"id": devis.id}) }}"><i class="bi bi-files me-1"></i>Dupliquer</a>
+                    <a class="btn btn-ghost w-100 mb-2" href="{{ path("app_invoice_duplication", {"id": devis.id}) }}"><i class="bi bi-archive me-1"></i>Archiver</a>
+                    <a class="btn btn-ghost w-100" href="{{ path("app_invoice_change_style", {"id": devis.id}) }}"><i class="bi bi-brush me-1"></i>Changer de style</a>
                 </div>
             </div>
 
@@ -142,7 +141,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="text-secondary small">
-                        <p class="mb-2">Devis valable {{ devis.validityDevis }} jours. Eau et électricité doivent être disponibles pour réaliser la prestation.</p>
+                        <p class="mb-2">Eau et électricité doivent être disponibles pour réaliser la prestation.</p>
                         <p class="mb-0">
                             {{ devis.mentionsLegales }}
                         </p>

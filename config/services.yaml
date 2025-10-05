@@ -23,3 +23,7 @@ services:
         arguments:
             $secret: '%env(RECAPTCHA_SECRET_KEY)%'
             $minScore: '%env(float:RECAPTCHA_MIN_SCORE)%'
+
+    App\Service\OpenAIAssistant:
+        arguments:
+            $apiKey: '%env(OPENAI_SECRET_KEY)%'
