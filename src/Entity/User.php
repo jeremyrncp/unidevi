@@ -143,6 +143,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $invoices;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fullname = null;
+
 
 
     public function __construct()
@@ -695,6 +698,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNumberFactures(?int $numberFactures): static
     {
         $this->numberFactures = $numberFactures;
+
+        return $this;
+    }
+
+    public function getFullname(): ?string
+    {
+        return $this->fullname;
+    }
+
+    public function setFullname(?string $fullname): static
+    {
+        $this->fullname = $fullname;
 
         return $this;
     }

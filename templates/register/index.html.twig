@@ -1,48 +1,141 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Inscription - Unidevi{% endblock %}
 
 {% block body %}
-    <script src="https://www.google.com/recaptcha/api.js"></script>
-    <div class="container py-5">
-        <h5 class="offcanvas-title">Unidevi</h5>
-
-        <div class="row align-items-center">
-            <div class="col-md-6 mb-4">
-                <h1 class="mb-3">Simplifie ta gestion,<br>remplis ton agenda<br>et augmente tes réservations 🚀</h1>
-                <p class="mb-3">15 €/mois – Sans engagement<br>Zéro commission</p>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><span class="highlight">✔</span> Système de réservation 100 % personnalisé</li>
-                    <li class="mb-2"><span class="highlight">✔</span> Synchronisation Google Agenda</li>
-                    <li class="mb-2"><span class="highlight">✔</span> Rappel email automatique</li>
-                    <li class="mb-2"><span class="highlight">✔</span> Augmente ton taux de conversion</li>
-                    <li class="mb-2"><span class="highlight">✔</span> Évite les annulations de RDV</li>
-                </ul>
-                <p class="mt-4"><i class="bi bi-lock"></i> Paiement sécurisé via Stripe</p>
-                <p><i class="bi bi-arrow-counterclockwise"></i> Sans engagement, annulation à tout moment</p>
-            </div>
-            <div class="col-md-6">
-                <div class="card p-4">
-                    <h4 class="mb-3">Créer mon compte</h4>
-                    <form method="post" id="demo-form">
-                        <div class="mb-3">
-                            <input type="email" requried class="form-control" placeholder="E-mail" name="email">
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" requried class="form-control" placeholder="Mot de passe" name="password">
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" requried class="form-check-input" id="cguCheck" name="cgu">
-                            <label class="form-check-label" for="cguCheck">J'accepte les CGU</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 g-recaptcha" data-sitekey="{{ siteKey }}"
-                                data-callback='onSubmit'
-                                data-action='submit'>S'inscrire</button>
-                    </form>
-                </div>
-            </div>
+    <!-- Top bar -->
+    <div class="topbar p-5">
+        <div class="d-flex align-items-center gap-2">
+            <span class="logo-dot"><img src="/images/logo.png" alt="logo" /></span>
+        </div>
+        <div class="small">
+            Déjà inscrit ? <a href="{{ path("app_login") }}" class="fw-semibold text-decoration-none">Connexion</a>
         </div>
     </div>
+
+    <!-- Card -->
+    <div class="panel row g-0">
+        <!-- Left / form -->
+        <div class="col-lg-7 panel-left">
+            <h1 class="fw-bold mb-2">Créer mon compte</h1>
+            <p class="hint mb-4">Saisissez vos informations pour générer des devis professionnels en quelques minutes.</p>
+
+            <form id="demo-form">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="fullname">Nom complet</label>
+                        <input class="form-control form-control-lg" name="fullname" id="fullname" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="company">Nom de l’entreprise</label>
+                        <input class="form-control form-control-lg" name="nameCompany" id="company">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="email">Email professionnel</label>
+                        <input type="email" class="form-control form-control-lg" name="email" id="email" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="phone">Téléphone</label>
+                        <input type="tel" class="form-control form-control-lg" name="phone" id="phone" placeholder="+33 6 12 34 56 78">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="password">Mot de passe</label>
+                        <input type="password" class="form-control form-control-lg" name="password" id="password" minlength="8" required>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                J’accepte les <a href="#" class="text-decoration-none">Conditions d’utilisation</a>
+                                et la <a href="#" class="text-decoration-none">Politique de confidentialité</a>
+                            </label>
+                            <div class="invalid-feedback">Vous devez accepter les conditions.</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button  class="btn btn-primary w-100 g-recaptcha" data-sitekey="{{ siteKey }}"
+                                 data-callback='onSubmit'
+                                 data-action='submit' type="submit">
+                            Commencer mon essai gratuit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right / testimonials & guarantees -->
+        <div class="col-lg-5 panel-right">
+            <!-- Testimonials -->
+            <div class="mb-4">
+                <div class="stars mb-1">★★★★★</div>
+                <strong>Sophie M.</strong> <span class="text-muted">• entrepreneuse</span>
+                <p class="mt-1 right-muted">
+                    L’interface est très intuitive et m’a fait gagner un temps précieux.
+                </p>
+            </div>
+
+            <div class="mb-4">
+                <div class="stars mb-1">★★★★★</div>
+                <strong>Karim T.</strong> <span class="text-muted">• auto-entrepreneur</span>
+                <p class="mt-1 right-muted">
+                    Je ne peux plus m’en passer, mes devis sont bien plus professionnels.
+                </p>
+            </div>
+
+            <div class="mini-sep"></div>
+
+            <!-- Guarantees -->
+            <div class="feature d-flex align-items-start mb-3">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <div>
+                    <strong>Satisfait ou remboursé</strong> <span class="text-muted">sous 14 jours</span><br>
+                    <span class="right-muted">Essayez sans risque.</span>
+                </div>
+            </div>
+
+            <div class="feature d-flex align-items-start mb-3">
+                <i class="bi bi-shield-check"></i>
+                <div>
+                    <strong>Conforme au standard PCI DSS</strong><br>
+                    <span class="right-muted">Traitement des paiements sécurisé.</span>
+                </div>
+            </div>
+
+            <div class="feature d-flex align-items-start mb-3">
+                <i class="bi bi-lock-fill"></i>
+                <div>
+                    <strong>Paiement sécurisé</strong><br>
+                    <span class="right-muted">Chiffrement de bout en bout.</span>
+                </div>
+            </div>
+
+            <div class="feature d-flex align-items-start mb-3">
+                <i class="bi bi-shield-lock-fill"></i>
+                <div>
+                    <strong>Respect de votre vie privée</strong><br>
+                    <span class="right-muted">RGPD et hébergement en France.</span>
+                </div>
+            </div>
+
+            <div class="mini-sep"></div>
+            <p class="right-muted mb-0">
+                Annulez à tout moment pendant l’essai gratuit, abonnement 12.50 €/mois ensuite.
+            </p>
+        </div>
+    </div>
+    </div>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }
+    </script>
     <script>
         function onSubmit(token) {
           document.getElementById("demo-form").submit();

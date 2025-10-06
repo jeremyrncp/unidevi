@@ -25,6 +25,19 @@ final class RegisterController extends AbstractController
             $errors[] = "L'adresse email est requise";
         }
 
+        if ($request->request->get("fullname") === "") {
+            $errors[] = "Le nom complet est requis";
+        }
+
+        if ($request->request->get("nameCompany") === "") {
+            $errors[] = "Le nom de la société est requis";
+        }
+
+        if ($request->request->get("phone") === "") {
+            $errors[] = "Le téléphone est requis";
+        }
+
+
         if ($request->request->get("password") === "") {
             $errors[] = "Le mot de passe est requis";
         }
@@ -48,6 +61,9 @@ final class RegisterController extends AbstractController
                     $user = new User();
                     $user->setEmail($request->request->get("email"));
                     $user->setPassword($userPasswordHasher->hashPassword($user, $request->request->get("password")));
+                    $user->setCompanyName($request->request->get("nameCompany"));
+                    $user->setPhoneNumber($request->request->get("phone"));
+                    $user->setFullname($request->request->get("fullname"));
                     $user->setRoles(["ROLE_USER"]);
                     $user->setCreatedAt(new \DateTime());
 

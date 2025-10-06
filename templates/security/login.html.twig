@@ -1,16 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}Connexion - Unidevi{% endblock %}
 
 
 {% block body %}
-<div class="container py-5">
-    <h5 class="offcanvas-title">Unidevi</h5>
+    <div class="login-container p-5">
+        <div class="logo text-center"><img src="/images/logo.png" alt="logo" /></div>
 
-    <div class="row align-items-center">
-
-        <form action="{{ path('app_login') }}" method="post">
-        {% if error %}
+        <div class="login-card">
+            {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
@@ -20,32 +18,38 @@
                 </div>
             {% endif %}
 
-            <h1 class="h3 mb-3 font-weight-normal">Merci de vous identifier</h1>
-            <label for="username">Email</label><br />
-            <input type="email" value="{{ last_username }}" name="_username" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="email" required autofocus>
-           <br /><br /> <label for="password">Password</label><br />
-            <input type="password" name="_password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="current-password" required>
-            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+            <h2 class="text-center fw-bold mb-4">Se connecter</h2>
 
-            {#
-                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                See https://symfony.com/doc/current/security/remember_me.html
-
-                <div class="checkbox mb-3">
-                    <input type="checkbox" name="_remember_me" id="_remember_me">
-                    <label for="_remember_me">Remember me</label>
+            <form action="{{ path('app_login') }}" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Email</label>
+                    <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
                 </div>
-            #}
-            <br /><br />
 
-            <button class="btn btn-primary btn-block" type="submit">
-                Se connecter
-            </button>
-        </form>
-        <br />
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Mot de passe</label>
+                    <div class="input-group input-group-lg">
+                        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                        <span class="input-group-text bg-transparent"><i class="bi bi-info-circle"></i></span>
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg">Se connecter</button>
+            </form>
+
+            <div class="divider text-center">ou</div>
+
+            <p class="text-center mb-0">
+                Vous n’avez pas de compte ?
+                <a href="{{ path('app_register') }}">Créer un compte</a><br />
+                <a href="{{ path('app_reset_password_process') }}">Reinitialiser le mot de passe</a>
+            </p>
+        </div>
+
+        <footer class="text-center mt-4">
+            Paiement sécurisé <strong>via Stripe</strong> • Données hébergées en France
+        </footer>
     </div>
-    <div class="mt-5">
-        <a href="{{ path('app_register') }}">S'inscrire</a> - <a href="{{ path('app_reset_password_process') }}">Reinitialiser le mot de passe</a>
-    </div>
-</div>
 {% endblock %}
