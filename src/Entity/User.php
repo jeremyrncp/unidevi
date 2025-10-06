@@ -89,7 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $displayFourchetteIA = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $proposerAutomatiquementUpsellsDevis = null;
 
     #[ORM\Column(nullable: true)]
