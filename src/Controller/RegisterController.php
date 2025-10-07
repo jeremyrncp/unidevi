@@ -69,8 +69,6 @@ final class RegisterController extends AbstractController
                     $entityManager->persist($user);
                     $entityManager->flush();
 
-                    dump($user);
-
                     return $security->login($user, 'form_login', 'app');
                 }
             }
