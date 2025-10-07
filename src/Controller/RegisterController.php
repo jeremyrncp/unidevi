@@ -42,8 +42,6 @@ final class RegisterController extends AbstractController
             $errors[] = "Le mot de passe est requis";
         }
 
-        dump($errors);
-
         if (count($errors) === 0 && $request->request->get("email") !== null) {
             $token = $request->request->get('g-recaptcha-response') ?: $request->request->get('recaptcha_token', '');
             $remoteIp = $request->getClientIp();
@@ -67,6 +65,8 @@ final class RegisterController extends AbstractController
                     $user->setFullname($request->request->get("fullname"));
                     $user->setRoles(["ROLE_USER"]);
                     $user->setCreatedAt(new \DateTime());
+
+                    dump($user);
 
                     $entityManager->persist($user);
                     $entityManager->flush();
