@@ -3,6 +3,7 @@
 {% block title %}Inscription - Unidevi{% endblock %}
 
 {% block body %}
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <!-- Top bar -->
     <div class="topbar p-5">
         <div class="d-flex align-items-center gap-2">
@@ -130,16 +131,10 @@
         </div>
     </div>
     </div>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
     <script>
     function onSubmit(token) {
       document.getElementById("demo-form").submit();
     }
-    </script>
-    <script>
-        function onSubmit(token) {
-          document.getElementById("demo-form").submit();
-        }
     </script>
 
 {% endblock %}
