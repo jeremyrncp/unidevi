@@ -66,10 +66,10 @@ final class RegisterController extends AbstractController
                     $user->setRoles(["ROLE_USER"]);
                     $user->setCreatedAt(new \DateTime());
 
-                    dump($user);
-
                     $entityManager->persist($user);
                     $entityManager->flush();
+
+                    dump($user);
 
                     return $security->login($user, 'form_login', 'app');
                 }
