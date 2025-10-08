@@ -1,193 +1,195 @@
 {% extends 'base_dashboard.html.twig' %}
 
-{% block title %}Ton devis — Mode IA{% endblock %}
+{% block title %}Ta facture — Mode IA{% endblock %}
 
 {% block body %}
-<main class="container py-4">
-    <!-- Card -->
-    <div class="card app-card p-3 p-md-4" id="contentFull">
-        <div id="loader" class="text-center"></div>
-        <div class="card-body">
-            <h1 class="display-heading mb-3">Décris ta mission</h1>
-            <p class="text-secondary mb-4">
-                En 1–2 phrases + un temps estimé, l’IA crée un devis complet et modifiable.
-            </p>
+    <main class="container py-4">
+        <!-- Card -->
+        <div class="card app-card p-3 p-md-4" id="contentFull">
+            <div class="card-body">
+                <h1 class="display-heading mb-3">Décris ta mission</h1>
+                <p class="text-secondary mb-4">
+                    En 1–2 phrases + un temps estimé, l’IA crée une facture complète et modifiable.
+                </p>
 
-            <form id="quote-form" novalidate>
-                <!-- Description -->
-                <div class="mb-3">
-                    <label for="mission" class="form-label fw-semibold">Description</label>
-                    <input type="text" id="mission" class="form-control form-control-lg"
-                           placeholder="Ex : Nettoyage complet appartement 70 m², cuisine + salle de bain soignée" required>
-                    <div class="invalid-feedback">Merci de décrire brièvement la mission.</div>
-                </div>
-
-                <!-- Time + unit -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-7 col-md-6">
-                        <label for="duree" class="form-label fw-semibold">Durée estimée</label>
-                        <input type="number" min="0" step="0.5" id="duree" class="form-control form-control-lg" placeholder="Ex : 5" required>
-                        <div class="invalid-feedback">Indique une durée.</div>
+                <form id="quote-form" novalidate>
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="mission" class="form-label fw-semibold">Description</label>
+                        <input type="text" id="mission" class="form-control form-control-lg"
+                               placeholder="Ex : Nettoyage complet appartement 70 m², cuisine + salle de bain soignée" required>
+                        <div class="invalid-feedback">Merci de décrire brièvement la mission.</div>
                     </div>
-                    <div class="col-5 col-md-3">
-                        <label for="unite" class="form-label fw-semibold">Unité</label>
-                        <select id="unite" class="form-select form-select-lg">
-                            <option value="heures" selected>heures</option>
-                            <option value="jours">jours</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- CTA -->
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg px-4">
-                        Générer la facture
-                    </button>
-                </div>
-            </form>
+                    <!-- Time + unit -->
+                    <div class="row g-3 align-items-end">
+                        <div class="col-7 col-md-6">
+                            <label for="duree" class="form-label fw-semibold">Durée estimée</label>
+                            <input type="number" min="0" step="0.5" id="duree" class="form-control form-control-lg" placeholder="Ex : 5">
+                            <div class="invalid-feedback">Indique une durée.</div>
+                        </div>
+                        <div class="col-5 col-md-3">
+                            <label for="unite" class="form-label fw-semibold">Unité</label>
+                            <select id="unite" class="form-select form-select-lg">
+                                <option value="heures" selected>heures</option>
+                                <option value="jours">jours</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            Générer la facture
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div id="loader" class="text-center"></div>
         </div>
-    </div>
 
-    <script>
-    // Démo : validation & récupération des valeurs
-    const form = document.getElementById('quote-form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        return;
-      }
-      const payload = {
-        description: document.getElementById('mission').value.trim(),
-        duree: Number(document.getElementById('duree').value),
-        unite: document.getElementById('unite').value
-      };
+        <script>
+        // Démo : validation & récupération des valeurs
+        const form = document.getElementById('quote-form');
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+          }
+          const payload = {
+            description: document.getElementById('mission').value.trim(),
+            duree: Number(document.getElementById('duree').value),
+            unite: document.getElementById('unite').value
+          };
 
-      try {
-        document.querySelector("#loader").innerHTML = "<img src='/images/loader.gif' alt='loader' />";
-        const r = await fetch('/invoice/ia-generate/{{ devis.id }}', {
-          method: 'POST',
-          headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          body: JSON.stringify(payload)
+          try {
+            document.querySelector("#loader").style.backgroundColor = "#FFFFF";
+            document.querySelector("#loader").style.zIndex = "99";
+            document.querySelector("#loader").innerHTML = "<div class='text-center'><img src='/images/loader.gif' alt='loader' /><br /><p>Notre IA vous crée la meilleure facture possible.</p></div>";
+            const r = await fetch('/devis/ia-generate/{{ devis.id }}', {
+              method: 'POST',
+              headers: { 'X-Requested-With': 'XMLHttpRequest' },
+              body: JSON.stringify(payload)
+            });
+            if (!r.ok) throw new Error('Envoie échoué');
+            const data = await r.text();
+
+            document.querySelector("#contentFull").innerHTML = data;
+
+          } catch (e) {
+            alert(e.message || 'Erreur réseau');
+          }
         });
-        if (!r.ok) throw new Error('Envoie échoué');
-        const data = await r.text();
 
-        document.querySelector("#contentFull").innerHTML = data;
+        let services = {};
+        let upsells = {};
 
-      } catch (e) {
-        alert(e.message || 'Erreur réseau');
-      }
-    });
+        const nf = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    let services = {};
-    let upsells = {};
+        function updateTotals(){
+          const sum = sel => [...document.querySelectorAll(sel+':checked')]
+          .map(i => +i.dataset.price || 0).reduce((a,b)=>a+b,0);
 
-    const nf = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          const totalMain   = sum('.main-item');
+          const totalUpsell = sum('.upsell-item');
+          document.getElementById('totalMain').textContent   = nf.format(totalMain);
+          document.getElementById('totalUpsell').textContent = nf.format(totalUpsell);
+          document.getElementById('subtotal').textContent    = nf.format(totalMain + totalUpsell);
+        }
 
-    function updateTotals(){
-      const sum = sel => [...document.querySelectorAll(sel+':checked')]
-      .map(i => +i.dataset.price || 0).reduce((a,b)=>a+b,0);
+        // toggle style upsell checked
+        function syncUpsellStyles(){
+          document.querySelectorAll('#upsellList .line.upsell').forEach(l => {
+            const input = l.querySelector('.upsell-item');
+            l.classList.toggle('checked', input.checked);
 
-      const totalMain   = sum('.main-item');
-      const totalUpsell = sum('.upsell-item');
-      document.getElementById('totalMain').textContent   = nf.format(totalMain);
-      document.getElementById('totalUpsell').textContent = nf.format(totalUpsell);
-      document.getElementById('subtotal').textContent    = nf.format(totalMain + totalUpsell);
-    }
+          });
+        }
 
-    // toggle style upsell checked
-    function syncUpsellStyles(){
-      document.querySelectorAll('#upsellList .line.upsell').forEach(l => {
-        const input = l.querySelector('.upsell-item');
-        l.classList.toggle('checked', input.checked);
+        document.addEventListener('change', e => {
+          if(e.target.matches('.main-item, .upsell-item')){
+            updateTotals();
+            if(e.target.matches('.upsell-item')) syncUpsellStyles();
+          }
+        });
+        // init
+        updateTotals(); syncUpsellStyles();
 
-      });
-    }
+        </script>
 
-    document.addEventListener('change', e => {
-      if(e.target.matches('.main-item, .upsell-item')){
-      updateTotals();
-      if(e.target.matches('.upsell-item')) syncUpsellStyles();
-    }
-    });
-    // init
-    updateTotals(); syncUpsellStyles();
-
-    </script>
-
-    <!-- MODAL: Ajouter prestation principale -->
-    <div class="modal fade" id="addMainModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <form class="modal-content" id="formAddMain">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ajouter une prestation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label">Titre</label>
-                        <input class="form-control" required>
+        <!-- MODAL: Ajouter prestation principale -->
+        <div class="modal fade" id="addMainModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" id="formAddMain">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une prestation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" rows="2"></textarea>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label">Titre</label>
+                            <input class="form-control" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label">Prix HT (€)</label>
+                            <input class="form-control" type="number" min="0" step="0.01" required>
+                        </div>
                     </div>
-                    <div>
-                        <label class="form-label">Prix HT (€)</label>
-                        <input class="form-control" type="number" min="0" step="0.01" required>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Annuler</button>
+                        <button class="btn btn-primary" type="submit">Ajouter</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Annuler</button>
-                    <button class="btn btn-primary" type="submit">Ajouter</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- MODAL: Ajouter upsell -->
-    <div class="modal fade" id="addUpsellModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <form class="modal-content" id="formAddUpsell">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ajouter un upsell</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label">Titre</label>
-                        <input class="form-control" required>
+        <!-- MODAL: Ajouter upsell -->
+        <div class="modal fade" id="addUpsellModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" id="formAddUpsell">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter un upsell</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">Bénéfice (phrase courte)</label>
-                        <textarea class="form-control" rows="2"></textarea>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label">Titre</label>
+                            <input class="form-control" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Bénéfice (phrase courte)</label>
+                            <textarea class="form-control" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label">Prix HT (€)</label>
+                            <input class="form-control" type="number" min="0" step="0.01" required>
+                        </div>
                     </div>
-                    <div>
-                        <label class="form-label">Prix HT (€)</label>
-                        <input class="form-control" type="number" min="0" step="0.01" required>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Annuler</button>
+                        <button class="btn btn-primary text-white" type="submit">Ajouter</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Annuler</button>
-                    <button class="btn btn-primary text-white" type="submit">Ajouter</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-    <script type="text/javascript">
-    // -------- Add prestation principale ----------
-    document.getElementById('formAddMain').addEventListener('submit', e => {
-      e.preventDefault();
-      const [titleEl, descEl, priceEl] = e.target.querySelectorAll('input, textarea, input[type="number"]');
-      const title = titleEl.value.trim(), desc = descEl.value.trim(), price = +priceEl.value;
-      const row = document.createElement('div');
-      let uniquid = Date.now() + Math.floor(Math.random() * 100);
-      row.className = 'line circle';
-      row.innerHTML = `
+        <script type="text/javascript">
+        // -------- Add prestation principale ----------
+        document.getElementById('formAddMain').addEventListener('submit', e => {
+          e.preventDefault();
+          const [titleEl, descEl, priceEl] = e.target.querySelectorAll('input, textarea, input[type="number"]');
+          const title = titleEl.value.trim(), desc = descEl.value.trim(), price = +priceEl.value;
+          const row = document.createElement('div');
+          let uniquid = Date.now() + Math.floor(Math.random() * 100);
+          row.className = 'line circle';
+          row.innerHTML = `
         <div class="d-flex gap-3">
           <div class="form-check mt-1">
-            <input class="form-check-input main-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
+            <input class="form-check-input main-item" name="checkbox-` + uniquid + `" id="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
           </div>
           <div>
             <div class="title"></div>
@@ -201,26 +203,26 @@
           <input type="hidden" name="type-` + uniquid + `" value="service" />
         </div>
       `;
-      row.querySelector('.title').textContent = title || 'Nouvelle prestation';
-      row.querySelector('.desc').textContent  = desc;
-      document.getElementById('mainList').appendChild(row);
-      bootstrap.Modal.getInstance(document.getElementById('addMainModal')).hide();
-      e.target.reset();
-      updateTotals();
-    });
+          row.querySelector('.title').textContent = title || 'Nouvelle prestation';
+          row.querySelector('.desc').textContent  = desc;
+          document.getElementById('mainList').appendChild(row);
+          bootstrap.Modal.getInstance(document.getElementById('addMainModal')).hide();
+          e.target.reset();
+          updateTotals();
+        });
 
-    // -------- Add upsell ----------
-    document.getElementById('formAddUpsell').addEventListener('submit', e => {
-      e.preventDefault();
-      const [titleEl, descEl, priceEl] = e.target.querySelectorAll('input, textarea, input[type="number"]');
-      const title = titleEl.value.trim(), desc = descEl.value.trim(), price = +priceEl.value;
-      const row = document.createElement('div');
-      let uniquid = Date.now() + Math.floor(Math.random() * 100);
-      row.className = 'line upsell checked';
-      row.innerHTML = `
+        // -------- Add upsell ----------
+        document.getElementById('formAddUpsell').addEventListener('submit', e => {
+          e.preventDefault();
+          const [titleEl, descEl, priceEl] = e.target.querySelectorAll('input, textarea, input[type="number"]');
+          const title = titleEl.value.trim(), desc = descEl.value.trim(), price = +priceEl.value;
+          const row = document.createElement('div');
+          let uniquid = Date.now() + Math.floor(Math.random() * 100);
+          row.className = 'line upsell checked';
+          row.innerHTML = `
         <div class="d-flex gap-3">
           <div class="form-check mt-1">
-            <input class="form-check-input upsell-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
+            <input class="form-check-input upsell-item" name="checkbox-` + uniquid + `" id="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
           </div>
           <div>
             <div class="title"></div>
@@ -233,15 +235,25 @@
           <input type="hidden" name="type-` + uniquid + `" value="upsell" />
 
         </div>`;
-      row.querySelector('.title').textContent = title || 'Nouvelle option';
-      row.querySelector('.desc').textContent  = desc;
-      document.getElementById('upsellList').appendChild(row);
-      bootstrap.Modal.getInstance(document.getElementById('addUpsellModal')).hide();
-      e.target.reset();
-      syncUpsellStyles(); updateTotals();
-    });
-    </script>
-</main>
+          row.querySelector('.title').textContent = title || 'Nouvelle option';
+          row.querySelector('.desc').textContent  = desc;
+          document.getElementById('upsellList').appendChild(row);
+          bootstrap.Modal.getInstance(document.getElementById('addUpsellModal')).hide();
+          e.target.reset();
+          syncUpsellStyles(); updateTotals();
+        });
+        </script>
+        <script type="text/javascript">
+        const changePrice = (id, value) => {
+          document.querySelector("#checkbox-" + id).setAttribute("data-price", value);
+          updateTotals();
+        }
+        const deleteRow = (id) => {
+          document.querySelector("#id-" + id).remove();
+          updateTotals();
+        }
+        </script>
+    </main>
 
 
 {% endblock %}

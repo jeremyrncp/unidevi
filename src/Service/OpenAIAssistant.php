@@ -115,8 +115,12 @@ class OpenAIAssistant
         return $upsells;
     }
 
-    public function createMessage(string $description, int $duree, string $unite)
+    public function createMessage(string $description, int $duree = null, string $unite)
     {
+        if ($duree === null) {
+            return "Desription du client : " . $description;
+        }
+
         return "Desription du client : " . $description . " pour une durée de " . $duree . " " . $unite;
     }
 
@@ -205,7 +209,7 @@ class OpenAIAssistant
     {
         $status = '';
         do {
-            sleep(2);
+            sleep(1);
             $response = $this->request('GET', "threads/$threadId/runs/$runId");
             $status = $response['status'];
         } while (!in_array($status, ['completed', 'failed', 'cancelled']));
