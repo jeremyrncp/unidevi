@@ -11,11 +11,7 @@
     <h2 class="mb-4 mt-4">Abonnement</h2>
 
     {% if subscription is null or subscriptionStripe is null or subscriptionStripe.status == "incomplete" %}
-        {% if user.trialEndedAt is not null %}
-            <div class="alert alert-info">
-                Vous bénéficiez de l'offre d'essai gratuit jusqu'à l'abonnement ou le <b>{{ user.trialEndedAt|date("d-m-Y") }}</b>
-            </div>
-        {% endif %}
+        <div class="alert alert-info">Abonnement à 12 euros 50 par mois, vous bénéficiez de trois jours d'essai gratuit lors du premier mois d'abonnement.</div>
 
         <div class="form-section">
             <h3 class="mb-4">S'abonner</h3>
@@ -94,8 +90,6 @@
       e.preventDefault();
       const email = document.querySelector('#email').value;
       const promoCode = document.getElementById("promo").value;
-      const address = document.querySelector('#address').value;
-
 
       const { paymentMethod, error } = await stripe.createPaymentMethod({
         type: 'card',
@@ -114,7 +108,7 @@
       const res = await fetch('/create-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, promoCode, address, paymentMethod: paymentMethod.id })
+        body: JSON.stringify({ email, promoCode, paymentMethod: paymentMethod.id })
       });
 
       const { clientSecret } = await res.json();

@@ -11,6 +11,7 @@ use App\Entity\Upsell;
 use App\Entity\UpsellInvoice;
 use App\Entity\User;
 use App\Form\ChangeStyleDevisType;
+use App\Form\ChangeStyleInvoiceType;
 use App\Form\CustomerDevisType;
 use App\Form\SelectionCustomerType;
 use App\Repository\CustomerRepository;
@@ -18,6 +19,7 @@ use App\Repository\DevisRepository;
 use App\Repository\InvoiceRepository;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
+use App\Service\SubscriptionService;
 use App\Service\UtilsService;
 use App\VO\SelectionCustomerVO;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,10 +67,14 @@ final class InvoiceController extends AbstractController
     }
 
     #[Route('/invoice/step0', name: 'app_invoice')]
-    public function step0(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository, NumerotationService $numerotationService): Response
+    public function step0(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository, NumerotationService $numerotationService, SubscriptionService $subscriptionService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        if ($subscriptionService->isDemo($user)) {
+            return $this->redirectToRoute("app_parameters_subscription");
+        }
 
         if ($request->request->get("font") !== null) {
             $style           = $request->request->get("style");
@@ -358,7 +364,7 @@ final class InvoiceController extends AbstractController
             throw new UnauthorizedHttpException("Non propritaire de la facture");
         }
 
-        $form = $this->createForm(ChangeStyleDevisType::class, $devis);
+        $form = $this->createForm(ChangeStyleInvoiceType::class, $devis);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -15,6 +15,7 @@ use App\Repository\CustomerRepository;
 use App\Repository\DevisRepository;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
+use App\Service\SubscriptionService;
 use App\Service\UtilsService;
 use App\VO\SelectionCustomerVO;
 use Doctrine\ORM\EntityManagerInterface;
@@ -61,10 +62,14 @@ final class DevisController extends AbstractController
 
 
     #[Route('/devis/step0', name: 'app_devis')]
-    public function step0(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository, NumerotationService $numerotationService): Response
+    public function step0(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository, NumerotationService $numerotationService, SubscriptionService $subscriptionService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        if ($subscriptionService->isDemo($user)) {
+            return $this->redirectToRoute("app_parameters_subscription");
+        }
 
         if ($request->request->get("font") !== null) {
             $style           = $request->request->get("style");
@@ -382,6 +387,8 @@ final class DevisController extends AbstractController
         if ($devis->getOwner() !== $user) {
             throw new UnauthorizedHttpException("Non propritaire du devis");
         }
+
+        $devis->setSendedAt(new \DateTime());
 
         $invoice = new Invoice();
         $invoice->hydrate($devis, $numerotationService->getNumberFactures($user));

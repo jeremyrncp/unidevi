@@ -102,6 +102,7 @@ final class SubscriptionController extends AbstractController
                 'default_payment_method' => $paymentMethod,
                 'discounts' => [["promotion_code" => $promoCodeId]],
                 'payment_settings' => ['save_default_payment_method' => 'on_subscription'],
+                'trial_period_days' => 3,
                 'billing_mode' => ["type" => 'flexible'],
                 'expand' => ['latest_invoice.confirmation_secret']
             ]);
@@ -113,6 +114,7 @@ final class SubscriptionController extends AbstractController
                 'payment_behavior' => 'default_incomplete',
                 'default_payment_method' => $paymentMethod,
                 'payment_settings' => ['save_default_payment_method' => 'on_subscription'],
+                'trial_period_days' => 3,
                 'billing_mode' => ["type" => 'flexible'],
                 'expand' => ['latest_invoice.confirmation_secret']
             ]);
@@ -346,7 +348,7 @@ final class SubscriptionController extends AbstractController
         $user = $this->getUser();
 
         if (is_null($user->getTrialEndedAt())) {
-            $user->setTrialEndedAt((new \DateTime())->modify("+1 month"));
+            $user->setTrialEndedAt((new \DateTime())->modify("+3 days"));
             $entityManager->flush();
 
             $this->addFlash("message", "Vous bénéficiez désormais de l'offre d'essai gratuit");
