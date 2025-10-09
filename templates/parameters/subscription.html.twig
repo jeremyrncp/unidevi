@@ -10,8 +10,13 @@
 
     <h2 class="mb-4 mt-4">Abonnement</h2>
 
+    {% if user.trialEndedAt is not null %}
+        <div class="alert alert-info">
+            Vous bénéficiez de l'offre d'essai gratuit jusqu'au <b>{{ user.trialEndedAt|date("d-m-Y") }}</b>
+        </div>
+    {% endif %}
+
     {% if subscription is null or subscriptionStripe is null or subscriptionStripe.status == "incomplete" %}
-        <div class="alert alert-info">Abonnement à 12 euros 50 par mois, vous bénéficiez de trois jours d'essai gratuit lors du premier mois d'abonnement.</div>
 
         <div class="form-section">
             <h3 class="mb-4">S'abonner</h3>
