@@ -120,7 +120,7 @@
 
       if (clientSecret !== undefined) {
         const result = await stripe.confirmCardSetup(clientSecret);
-        if (result.error) {
+        if (result.last_setup_error) {
           alert(result.error.message);
         } else {
           if (result.status === 'succeeded') {
