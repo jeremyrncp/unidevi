@@ -119,7 +119,7 @@
       const { clientSecret } = await res.json();
 
       if (clientSecret !== undefined) {
-        const result = await stripe.confirmCardPayment(clientSecret);
+        const result = await stripe.confirmCardSetup(clientSecret);
         if (result.error) {
           alert(result.error.message);
         } else {
