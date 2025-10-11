@@ -123,7 +123,7 @@
         if (result.error) {
           alert(result.error.message);
         } else {
-          if (result.paymentIntent.status === 'succeeded') {
+          if (result.status === 'succeeded') {
             alert('Abonnement activé avec succès !');
             window.location.reload();
           }
