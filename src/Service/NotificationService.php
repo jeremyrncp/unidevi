@@ -2,18 +2,14 @@
 
 namespace App\Service;
 
-use App\Entity\Appointment;
-use App\Entity\AppointmentItem;
 use App\Entity\User;
-use App\Repository\TemplatedEmailRepository;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
 class NotificationService
 {
-    public function __construct(private readonly TemplatedEmailRepository $templatedEmailRepository, private readonly Environment $twig, private readonly MailerInterface $mailer)
+    public function __construct(private readonly Environment $twig, private readonly MailerInterface $mailer)
     {
 
     }
