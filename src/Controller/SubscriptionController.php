@@ -126,7 +126,6 @@ final class SubscriptionController extends AbstractController
 
         $entityManager->persist($subscription);
 
-        $user->setTrialEndedAt((new \DateTime())->modify("+3 days"));
 
         $entityManager->flush();
 

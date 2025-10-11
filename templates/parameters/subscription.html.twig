@@ -10,13 +10,13 @@
 
     <h2 class="mb-4 mt-4">Abonnement</h2>
 
-    {% if user.trialEndedAt is not null %}
-        <div class="alert alert-info">
-            Vous bénéficiez de l'offre d'essai gratuit jusqu'au <b>{{ user.trialEndedAt|date("d-m-Y") }}</b>
-        </div>
-    {% endif %}
 
     {% if subscription is null or subscriptionStripe is null or subscriptionStripe.status == "incomplete" %}
+        {% if user.trialEndedAt is not null %}
+            <div class="alert alert-info">
+                Vous bénéficiez de l'offre d'essai gratuit jusqu'au <b>{{ user.trialEndedAt|date("d-m-Y") }}</b>
+            </div>
+        {% endif %}
 
         <div class="form-section">
             <h3 class="mb-4">S'abonner</h3>
