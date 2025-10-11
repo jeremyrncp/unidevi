@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class RegisterController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function index(Request $request, RecaptchaVerifier $captcha, Security $security, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function index(Request $request, RecaptchaVerifier $captcha, Security $security, UserRepository $userRepository, NotificationService $notificationService, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $errors = [];
 
@@ -69,6 +69,10 @@ final class RegisterController extends AbstractController
 
                     $entityManager->persist($user);
                     $entityManager->flush();
+
+                    $notificationService->sendRegister($user);
+                    $notificationService->sendPromotionCode($user);
+
 
                     return $security->login($user, 'form_login', 'app');
                 }
