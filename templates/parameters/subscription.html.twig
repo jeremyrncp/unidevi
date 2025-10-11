@@ -120,14 +120,7 @@
 
       if (clientSecret !== undefined) {
         const result = await stripe.confirmCardSetup(clientSecret);
-        if (result.last_setup_error) {
-          alert(result.error.message);
-        } else {
-          if (result.status === 'succeeded') {
-            alert('Abonnement activé avec succès !');
-            window.location.reload();
-          }
-        }
+        window.location.reload();
       }
       else {
         alert("Le code promo n'existe pas");
