@@ -65,7 +65,6 @@ final class RegisterController extends AbstractController
                     $user->setFullname($request->request->get("fullname"));
                     $user->setRoles(["ROLE_USER"]);
                     $user->setCreatedAt(new \DateTime());
-                    $user->setTrialEndedAt((new \DateTime())->modify("+3 days"));
 
                     $entityManager->persist($user);
                     $entityManager->flush();

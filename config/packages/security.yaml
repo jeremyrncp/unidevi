@@ -13,7 +13,7 @@ security:
         users_in_memory:
             memory:
                 users:
-                    admin: { password: '$2y$13$/Mr.nJcwVK45Cy4ZyCo5Be5V/QLl/Lx9snBEtG7uXdmAg6xggBpHS', roles: [ 'ROLE_ADMIN', 'ROLE_USER' ] }
+                    admin: { password: '$2y$13$DR6q.hnswAjVmrmnPrvkZOVC.jlp.C63oCQsha/k3KLrqJ8n5cs/y', roles: [ 'ROLE_ADMIN', 'ROLE_USER' ] }
 
     firewalls:
         dev:

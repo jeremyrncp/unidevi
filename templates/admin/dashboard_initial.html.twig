@@ -1,0 +1,85 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block main %}
+
+  {{ form(form) }}
+
+  <div class="row pb-5">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+          Nombre de comptes crées (total)
+        </div>
+        <div class="card-body">
+          {{ countUsers }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+          Nombre de paiements (sur la période)
+        </div>
+        <div class="card-body">
+          {{ numberPayments }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+          Chiffre d'affaire (sur la période)
+        </div>
+        <div class="card-body">
+          {{ sumCA/100 }} euros
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+         Nombre de souscription active (sur la période)
+        </div>
+        <div class="card-body">
+          {{ nbSubscriptionsactive }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+          Nombre de souscription inactive (sur la période)
+        </div>
+        <div class="card-body">
+          {{ nbSubscriptionsInactive }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+          Nombre de souscription active (total)
+        </div>
+        <div class="card-body">
+          {{ nbSubscriptionsactiveTotal }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-title card-header">
+          Nombre de souscription inactive (total)
+        </div>
+        <div class="card-body">
+          {{ nbSubscriptionsInactiveTotal }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock main %}
