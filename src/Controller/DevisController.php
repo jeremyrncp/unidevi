@@ -629,8 +629,8 @@ final class DevisController extends AbstractController
           "sumArticles" => $sumArticles/100,
           "tvaUpsells" => $sumUpsells/100*($devis->getTvaRate()/100),
           "tvaArticles" => $sumArticles/100*($devis->getTvaRate()/100),
-          "tvaTotal" => round($devis->getSubtotal(),2)/100*($devis->getTvaRate()/100),
-          "subtotal" => round($devis->getSubtotal(),2)
+          "tvaTotal" => round((float) $devis->getSubtotal(),2)/100*($devis->getTvaRate()/100),
+          "subtotal" => round((float) $devis->getSubtotal(),2)
         ];
     }
 
