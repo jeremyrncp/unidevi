@@ -16,7 +16,7 @@ class CustomerType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ["label" => "Nom complet ou nom société"])
-            ->add('email', EmailType::class, ["label" => "Adresse email"])
+            ->add('email', EmailType::class, ["label" => "Adresse email", "required" => false])
             ->add('phone', TextType::class, ["label" => "Numéro de téléphone", "required" => false])
             ->add('address', TextType::class, ["label" => "Adresse"])
             ->add('postalCode', TextType::class, ["label" => "Code postal"])

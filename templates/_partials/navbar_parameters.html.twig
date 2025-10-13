@@ -10,6 +10,6 @@
         <a class="nav-link {{ app.request.attributes.get('_route') in ["app_parameters_styles"] ? 'active' : '' }}" href="{{ path("app_parameters_styles") }}" role="tab">Logo et style</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link {{ app.request.attributes.get('_route') in ["app_parameters_subscription"] ? 'active' : '' }}" href="{{ path("app_parameters_subscription") }}" role="tab" aria-current="page">Abonnement</a>
+        <a class="nav-link {{ app.request.attributes.get('_route') in ["app_parameters_subscription", "app_parameters_version_pro"] ? 'active' : '' }}" href="{{ path("app_parameters_subscription") }}" role="tab" aria-current="page">Abonnement</a>
     </li>
 </ul>

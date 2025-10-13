@@ -44,6 +44,45 @@ final class SubscriptionController extends AbstractController
             $priceSubscription = $invoiceStripe->amount_due;
         }
 
+        if ($subscription === null) {
+            return $this->render('parameters/version_pro.html.twig', [
+                'user' => $user,
+                'subscription' => $subscription,
+                'payments' => $payments,
+                'subscriptionStripe' => $subscriptionStripe,
+                'priceSubscription' => $priceSubscription
+            ]);
+        } else {
+            return $this->render('parameters/subscription.html.twig', [
+                'user' => $user,
+                'subscription' => $subscription,
+                'payments' => $payments,
+                'subscriptionStripe' => $subscriptionStripe,
+                'priceSubscription' => $priceSubscription
+            ]);
+        }
+    }
+
+    #[Route('/parameters/versionpro', name: 'app_parameters_version_pro')]
+    public function versionPro(SubscriptionRepository $subscriptionRepository, PaymentRepository $paymentRepository): Response
+    {
+        $priceSubscription = null;
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $subscription = $subscriptionRepository->findOneBy(["owner" => $user]);
+        $payments = $paymentRepository->findBy(["owner" => $user], ["createdAt" => "DESC"]);
+        $subscriptionStripe = null;
+
+        if ($subscription instanceof Subscription) {
+            \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+            $subscriptionStripe = \Stripe\Subscription::retrieve($subscription->getSubscriptionStripeId());
+            $invoiceStripe = \Stripe\Invoice::retrieve($subscriptionStripe->latest_invoice);
+
+            $priceSubscription = $invoiceStripe->amount_due;
+        }
+
         return $this->render('parameters/subscription.html.twig', [
             'user' => $user,
             'subscription' => $subscription,

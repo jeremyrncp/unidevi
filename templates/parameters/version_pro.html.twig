@@ -1,0 +1,157 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Version PRO - abonnement{% endblock %}
+
+{% block body %}
+    <div class="p-4 p-md-5">
+    {% include "_partials/navbar_parameters.html.twig" %}
+
+        <!-- HERO -->
+        <section class="py-5">
+            <div class="container">
+                <div class="text-center mx-auto" style="max-width:880px">
+                    <h1 class="fw-bold mb-3">Passez à la version Pro et envoyez des<br class="d-none d-md-block"> devis professionnels à vos clients dès aujourd'hui</h1>
+                    <p class="text-secondary mb-4">Plus de filigrane. Plus de limites. Juste de la productivité.</p>
+
+                    <div class="d-flex flex-column flex-md-row gap-2 justify-content-center align-items-center">
+                        <a href="{{ path("app_parameters_version_pro") }}" class="btn btn-brand btn-lg text-white">
+                            <i class="bi bi-lock-fill me-2"></i>Activer ma version Pro
+                        </a>
+                        <span class="badge hero-badge rounded-pill d-inline-flex align-items-center gap-2 text-black">
+              <i class="bi bi-hand-thumbs-up-fill"></i> Recommandée par +106 entrepreneurs
+            </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING TABLE -->
+        <section class="pb-4">
+            <div class="container">
+                <div class="card shadow-soft border-0">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-pricing mb-0">
+                                        <thead class="table-light">
+                                        <tr>
+                                            <th class="py-3 ps-4">Fonctionnalités</th>
+                                            <th class="py-3 text-center" style="width:220px">Version Pro</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="ps-4">Devis & factures électroniques illimités</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4">Transformation d’un devis en facture en 1 clic</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4">Créer vos devis et facture avec l'IA unidevi</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4">Votre logo et badge Google sur les documents</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4">Auto-entrepreneur : factures sans TVA</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4">Suggestion et proposition d'UPSELL par l'IA</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4">SANS ENGAGEMENT</td>
+                                            <td class="text-center"><i class="bi bi-check2-circle fs-5 check"></i></td>
+                                        </tr>
+                                        <tr class="table-light">
+                                            <td class="ps-4">
+                                                <div class="fw-semibold">12.5 €/mois, sans engagement</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="fw-bold">12.5 €/mois</div>
+                                                <div class="small text-secondary">sans engagement</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center">
+                                                <a href="{{ path("app_parameters_version_pro") }}" class="btn btn-primary">
+                                                    J’y vais &nbsp;→&nbsp; version Pro
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRUST + TESTIMONIALS -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- Confiance & Sécurité -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-soft h-100">
+                            <div class="card-body p-4">
+                                <h5 class="mb-3"><i class="bi bi-shield-lock me-2"></i>Confiance &amp; Sécurité</h5>
+                                <ul class="list-unstyled list-check mb-3">
+                                    <li class="mb-2"><i class="bi bi-check2-circle me-2"></i>Paiement sécurisé par Stripe
+                                        <img class="logo-chip ms-2" src="https://img.shields.io/badge/stripe-604A%20%20-?style=flat&logo=stripe&logoColor=white" alt="Stripe">
+                                    </li>
+                                    <li class="mb-2"><i class="bi bi-check2-circle me-2"></i>Sans engagement</li>
+                                    <li class="mb-2"><i class="bi bi-check2-circle me-2"></i>France — hébergé en France</li>
+                                </ul>
+
+                                <div class="border rounded p-3 badge-trust">
+                                    <strong>Pas satisfait ?</strong> Tu peux annuler à tout moment. Pas de frais cachés.
+                                    Tu gardes l’accès à ton historique de devis même après résiliation.
+                                </div>
+
+                                <a href="{{ path("app_parameters_version_pro") }}" class="btn btn-outline-primary btn-lg mt-3">
+                                    <i class="bi bi-unlock me-2"></i>Je débloque ma version Pro
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Témoignages -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-soft h-100">
+                            <div class="card-body p-4">
+                                <h5 class="mb-4">Témoignages / Preuves sociales</h5>
+
+                                <div class="d-flex align-items-start gap-3 mb-4">
+                                    <img src="https://i.pravatar.cc/80?img=12" class="rounded-circle flex-shrink-0" width="56" height="56" alt="avatar">
+                                    <div>
+                                        <div class="fw-semibold">Sabri · auto-entrepreneur</div>
+                                        <p class="mb-0 text-secondary">Avant Unidevi, mes devis me prenaient 30 minutes. Aujourd’hui, 2 clics suffisent. La version Pro, c’est indispensable.</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-start gap-3">
+                                    <img src="https://i.pravatar.cc/80?img=32" class="rounded-circle flex-shrink-0" width="56" height="56" alt="avatar">
+                                    <div>
+                                        <div class="fw-semibold">Smail · artisan multervice</div>
+                                        <p class="mb-0 text-secondary">J’ai signé deux nouveaux clients dès la première semaine grâce à mes devis professionnels.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

@@ -18,28 +18,81 @@
             </div>
         {% endif %}
 
-        <div class="form-section">
-            <h3 class="mb-4">S'abonner</h3>
-            <form id="subscription-form">
+        <form id="subscription-form">
+
+            <div class="form-section">
+                <!-- Récap -->
+                <div class="d-flex align-items-center justify-content-between mb-2 summary-row">
+                    <div>Total</div>
+                    <div class="value">12,50&nbsp;€</div>
+                </div>
+
+                <!-- Paiement -->
+                <h5 class="mb-3">
+                    Paiement Stripe
+                </h5>
+
+                <!-- Stripe Elements placeholder -->
                 <div class="mb-3">
+                    <label class="form-label">Numéro de carte</label>
+                    <div id="card-element" class="form-control input-soft py-3">
+                        <!-- Stripe Card Element will be mounted here -->
+                    </div>
+                </div>
+
+                <!-- Billing info -->
+                <h5 class="mt-4 mb-3">Informations de facturation</h5>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" placeholder="E-mail" value="{{ user.email }}" disabled>
                 </div>
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="cguCheck">
-                    <label class="form-check-label" for="cguCheck">J'accepte les <a href="https://unidevi.fr/cgu" target="_blank">CGU</a></label>
-                </div>
                 <div class="mb-3">
+                    <label class="form-label">Nom du titulaire</label>
                     <input type="text" class="form-control" placeholder="Nom sur la carte">
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Adresse <span class="text-secondary">(facultatif)</span></label>
+                    <input type="text" class="form-control input-soft" placeholder="Adresse">
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-7">
+                        <label class="form-label">Ville</label>
+                        <input type="text" class="form-control input-soft" placeholder="Ville">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Code postal</label>
+                        <input type="text" class="form-control input-soft" placeholder="Code postal">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Code promo</label>
                     <input type="text" id="promo" placeholder="Code promo" class="form-control" />
                 </div>
-                <div class="row mb-3" id="card-element">
+
+                <!-- Bullets + aide -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="small">
+                        <div class="mb-1"><i class="bi bi-check2-circle me-2 text-success"></i>Garantie satisfaction</div>
+                        <div><i class="bi bi-check2-circle me-2 text-success"></i>Sans engagement – annulez à tout moment</div>
+                    </div>
+                    <a href="https://unidevi.fr/#" target="_blank" class="help-link">Besoin d’aide ?</a>
                 </div>
-                <div class="mb-4">
-                    <button type="submit" class="btn btn-primary w-100">Activer mon abonnement</button>
-            </form>
-        </div>
+
+                <!-- Terms -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" value="" id="terms">
+                    <label class="form-check-label" for="terms">
+                        J’accepte les <a href="https://unidevi.fr/mentions-legales-et-cgv/" target="_blank">conditions de service</a>
+                    </label>
+                </div>
+
+                <!-- CTA -->
+                <button class="btn btn-primary w-100 btn-lg btn-cta" type="submit">
+                    Activer Pro
+                </button>
+
+            </div>
+    </form>
     {% else %}
         {% if subscription.active == true %}
             <h3>
