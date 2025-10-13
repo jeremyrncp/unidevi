@@ -242,18 +242,30 @@ final class InvoiceController extends AbstractController
             foreach ($data as $uniquid => $item) {
                 if ($item["type"] === "service") {
                     $article = new ArticleInvoice();
-                    $article->setName($item["title"])
-                            ->setPrice($item["price"] * 100)
-                            ->setDescription($item["description"]);
+                    $article->setName($item["title"])->setDescription(
+                        $item["description"]
+                    );
+
+                    if (is_int($item["price"])) {
+                        $article->setPrice($item["price"] * 100);
+                    }
 
                     $devis->addArticle($article);
-                } else if ($item["type"] === "upsell") {
-                    $upsell = new UpsellInvoice();
-                    $upsell->setName($item["title"])
-                        ->setPrice($item["price"] * 100)
-                        ->setDescription($item["description"]);
+                } else {
+                    if ($item["type"] === "upsell") {
+                        $upsell = new UpsellInvoice();
 
-                    $devis->addUpsell($upsell);
+                        $upsell->setName($item["title"])
+                            ->setDescription(
+                                $item["description"]
+                            );
+
+                        if (is_int($item["price"])) {
+                            $upsell->setPrice($item["price"] * 100);
+                        }
+
+                        $devis->addUpsell($upsell);
+                    }
                 }
             }
 
@@ -489,17 +501,27 @@ final class InvoiceController extends AbstractController
             foreach ($data as $uniquid => $item) {
                 if ($item["type"] === "service") {
                     $article = new ArticleInvoice();
-                    $article->setName($item["title"])->setPrice($item["price"] * 100)->setDescription(
+                    $article->setName($item["title"])->setDescription(
                         $item["description"]
                     );
+
+                    if (is_int($item["price"])) {
+                        $article->setPrice($item["price"] * 100);
+                    }
 
                     $devis->addArticle($article);
                 } else {
                     if ($item["type"] === "upsell") {
                         $upsell = new UpsellInvoice();
-                        $upsell->setName($item["title"])->setPrice($item["price"] * 100)->setDescription(
-                            $item["description"]
-                        );
+
+                        $upsell->setName($item["title"])
+                            ->setDescription(
+                                $item["description"]
+                            );
+
+                        if (is_int($item["price"])) {
+                            $upsell->setPrice($item["price"] * 100);
+                        }
 
                         $devis->addUpsell($upsell);
                     }

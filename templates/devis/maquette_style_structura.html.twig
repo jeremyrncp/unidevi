@@ -206,7 +206,7 @@
     <h2 class="section-title">{{ devis.name }}</h2>
     <ol class="clean">
         {% for article in devis.articles %}
-        <li>{{ article.name }} — {{ article.description }} <span class="money">{{ article.price/100 }}&nbsp;€ HT</span></li>
+        <li>{{ article.name }} — {{ article.description }} {% if article.price is not null %} <span class="money">{{ article.price/100 }}&nbsp;€ HT</span>{% endif %}</li>
         {% endfor %}
     </ol>
 
@@ -219,7 +219,7 @@
                 <article class="upsell-cell" aria-label="{{ upsell.name }}">
                     <h5>{{ upsell.name }}</h5>
                     <p>{{ upsell.description }}</p>
-                    <div class="price">+ {{ upsell.price/100 }} € <small>HT</small></div>
+                    {% if upsell.price is not null %} <div class="price">+ {{ upsell.price/100 }} € <small>HT</small>{% endif %}</div>
                 </article>
             {% endfor %}
             </div>

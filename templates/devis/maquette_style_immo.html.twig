@@ -149,7 +149,7 @@
     <h2 class="section-title">{{ devis.name }}</h2>
     <ul class="clean">
         {% for article in devis.articles %}
-        <li>{{ article.name }} — {{ article.description }} <span class="money">{{ article.price/100 }}&nbsp;€ HT</span></li>
+        <li>{{ article.name }} — {{ article.description }} {% if article.price is not null %} <span class="money">{{ article.price/100 }}&nbsp;€ HT</span>{% endif %}</li>
         {% endfor %}
     </ul>
 
@@ -160,7 +160,7 @@
             {% for upsell in devis.upsells %}
                 <div style="margin-top:6px"><span class="cb"></span>
                     {{ upsell.name }} — {{ upsell.description }}
-                    <span class="money"><strong>{{ upsell.price/100 }}&nbsp;€</strong></span>
+                    {% if upsell.price is not null %} <span class="money"><strong>{{ upsell.price/100 }}&nbsp;€</strong></span>{% endif %}
                 </div>
             {% endfor %}
         </div>

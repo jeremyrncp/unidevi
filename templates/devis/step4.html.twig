@@ -62,7 +62,9 @@
                 {% for article in devis.articles %}
                 <div class="li-row">
                     <div>• {{ article.name }} — {{ article.description }}</div>
-                    <div class="price">{{ article.price/100 }}&nbsp;€</div>
+                    {% if article.price is not null %}
+                        <div class="price">{{ article.price/100 }}&nbsp;€</div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -73,7 +75,9 @@
             {% for upsell in devis.upsells %}
                 <div class="li-row">
                     <div>• {{ upsell.name }} — {{ upsell.description }}</div>
-                    <div class="price">{{ upsell.price/100 }}&nbsp;€</div>
+                    {% if upsell.price is not null %}
+                        <div class="price">{{ upsell.price/100 }}&nbsp;€</div>
+                    {% endif %}
                 </div>
             {% endfor %}
 
