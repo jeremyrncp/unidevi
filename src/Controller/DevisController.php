@@ -230,6 +230,7 @@ final class DevisController extends AbstractController
         if ($request->request->get("submitType") === "modeManuel") {
             $devis->setName($request->request->get("titleDevis"));
             $devis->setTvaRate($request->request->get("tvaRate"));
+            $devis->setSubtotal($request->request->get("subtotal"));
 
 
             $data = $this->mapServiceAndUpsell($request);
@@ -512,6 +513,7 @@ final class DevisController extends AbstractController
         if ($request->request->get("submitType") === "modeManuel") {
             $devis->setName($request->request->get("titleDevis"));
             $devis->setTvaRate($request->request->get("tvaRate"));
+            $devis->setSubtotal($request->request->get("subtotal"));
 
             $data = $this->mapServiceAndUpsell($request);
 
@@ -627,7 +629,8 @@ final class DevisController extends AbstractController
           "sumArticles" => $sumArticles/100,
           "tvaUpsells" => $sumUpsells/100*($devis->getTvaRate()/100),
           "tvaArticles" => $sumArticles/100*($devis->getTvaRate()/100),
-          "tvaTotal" => ($sumUpsells+$sumArticles)/100*($devis->getTvaRate()/100),
+          "tvaTotal" => round($devis->getSubtotal(),2)/100*($devis->getTvaRate()/100),
+          "subtotal" => round($devis->getSubtotal(),2)
         ];
     }
 

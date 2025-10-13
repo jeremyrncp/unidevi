@@ -109,7 +109,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <div class="text-secondary">Nouveau total HT</div>
-                            <div class="fw-semibold">{{ sumArticles+sumUpsells }}&nbsp;€</div>
+                            <div class="fw-semibold">{{ subtotal }}&nbsp;€</div>
                         </div>
                         <div class="d-flex justify-content-between">
                             <div class="text-secondary">TVA ({{  devis.tvaRate }}%)</div>
@@ -118,7 +118,7 @@
                         <hr class="divider">
                         <div class="d-flex justify-content-between fs-5">
                             <div class="fw-semibold">Total TTC avec options</div>
-                            <div class="fw-bold">{{  tvaTotal+sumUpsells+sumArticles }}&nbsp;€</div>
+                            <div class="fw-bold">{{  tvaTotal+subtotal }}&nbsp;€</div>
                         </div>
                     </div>
                 </div>

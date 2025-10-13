@@ -109,6 +109,9 @@ class Devis
     #[ORM\Column(nullable: true)]
     private ?int $validityDevis = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $subtotal = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -530,5 +533,17 @@ class Devis
         }
 
         return ($total + ($total * $this->tvaRate / 100))/100;
+    }
+
+    public function getSubtotal(): ?string
+    {
+        return $this->subtotal;
+    }
+
+    public function setSubtotal(?string $subtotal): static
+    {
+        $this->subtotal = $subtotal;
+
+        return $this;
     }
 }
