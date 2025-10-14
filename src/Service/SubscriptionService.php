@@ -17,6 +17,10 @@ class SubscriptionService
             return false;
         }
 
+        if (count($user->getDevis()) === 0 OR count($user->getInvoices() === 0)) {
+            return false;
+        }
+
         return true;
     }
 }

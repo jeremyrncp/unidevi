@@ -172,8 +172,15 @@
       const { clientSecret } = await res.json();
 
       if (clientSecret !== undefined) {
-        const result = await stripe.confirmCardSetup(clientSecret);
-        window.location.reload();
+        const result = await stripe.confirmCardPayment(clientSecret);
+        if (result.error) {
+          alert(result.error.message);
+        } else {
+          if (result.paymentIntent.status === 'succeeded') {
+            alert('Abonnement activé avec succès !');
+            window.location.reload();
+          }
+        }
       }
       else {
         alert("Le code promo n'existe pas");

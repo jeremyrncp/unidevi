@@ -142,7 +142,6 @@ final class SubscriptionController extends AbstractController
                 'discounts' => [["promotion_code" => $promoCodeId]],
                 'payment_settings' => ['save_default_payment_method' => 'on_subscription'],
                 'billing_mode' => ["type" => 'flexible'],
-                'trial_period_days' => 3,
                 'expand' => ['latest_invoice.confirmation_secret', 'pending_setup_intent']
             ]);
         } else {
@@ -154,7 +153,6 @@ final class SubscriptionController extends AbstractController
                 'default_payment_method' => $paymentMethod,
                 'payment_settings' => ['save_default_payment_method' => 'on_subscription'],
                 'billing_mode' => ["type" => 'flexible'],
-                'trial_period_days' => 3,
                 'expand' => ['latest_invoice.confirmation_secret', 'pending_setup_intent']
             ]);
         }
@@ -171,12 +169,12 @@ final class SubscriptionController extends AbstractController
         $entityManager->flush();
 
 
-        $clientSecret = $subscriptionStripe->pending_setup_intent->client_secret;
+        $confirmationSecret = $subscriptionStripe->latest_invoice->confirmation_secret;
 
 
         return $this->json([
             'subscriptionId' => $subscriptionStripe->id,
-            'clientSecret' =>  $clientSecret,
+            'clientSecret' =>  $confirmationSecret->client_secret,
         ]);
     }
 
