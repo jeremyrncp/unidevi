@@ -6,7 +6,6 @@
 <main class="container py-4">
     <div class="card-soft p-4 p-md-5">
         <h2 class="mb-0">Facture #{{ devis.number }}</h2>
-        <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_invoice_send", {"id": devis.id}) }}?file={{ pdf }}"><i class="bi bi-files me-1"></i>Envoyer</a>
         <a class="btn btn-brand text-white w-100 mb-2" href="/uploads/{{ pdf }}" target="_blank"><i class="bi bi-download me-1"></i>Télécharger</a>
         <a class="btn btn-brand text-white w-100 mb-2" href="{{ path("app_invoice_duplication", {"id": devis.id}) }}"><i class="bi bi-files me-1"></i>Dupliquer</a>
         <a class="btn btn-ghost w-100 mb-2" href="{{ path("app_invoice_duplication", {"id": devis.id}) }}"><i class="bi bi-archive me-1"></i>Archiver</a>
