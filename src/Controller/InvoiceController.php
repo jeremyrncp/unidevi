@@ -246,7 +246,7 @@ final class InvoiceController extends AbstractController
                         $item["description"]
                     );
 
-                    if (is_int($item["price"])) {
+                    if ($item["price"] !== "") {
                         $article->setPrice($item["price"] * 100);
                     }
 
@@ -260,7 +260,7 @@ final class InvoiceController extends AbstractController
                                 $item["description"]
                             );
 
-                        if (is_int($item["price"])) {
+                        if ($item["price"] !== "") {
                             $upsell->setPrice($item["price"] * 100);
                         }
 
@@ -506,7 +506,7 @@ final class InvoiceController extends AbstractController
                         $item["description"]
                     );
 
-                    if (is_int($item["price"])) {
+                    if ($item["price"] !== "") {
                         $article->setPrice($item["price"] * 100);
                     }
 
@@ -520,7 +520,7 @@ final class InvoiceController extends AbstractController
                                 $item["description"]
                             );
 
-                        if (is_int($item["price"])) {
+                        if ($item["price"] !== "") {
                             $upsell->setPrice($item["price"] * 100);
                         }
 
