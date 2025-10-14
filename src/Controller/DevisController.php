@@ -627,7 +627,7 @@ final class DevisController extends AbstractController
             $sumUpsells += $upsell->getPrice();
         }
 
-        $sumArticles = ($sumArticles === 0) ? $devis->getTotalMain() : $sumArticles/100;
+        $sumArticles = ($sumArticles === 0) ? round((float)$devis->getTotalMain(), 2) : $sumArticles/100;
 
 
         return [

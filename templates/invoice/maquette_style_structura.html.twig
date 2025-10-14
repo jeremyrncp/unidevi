@@ -213,15 +213,17 @@
     <section class="upsell" aria-labelledby="upsell-title">
         <h4 id="upsell-title">Options supplémentaires</h4>
         <div class="upsell-table">
-            <div class="upsell-row">
-                {% for upsell in devis.upsells %}
-                    <article class="upsell-cell" aria-label="{{ upsell.name }}">
-                        <h5>{{ upsell.name }}</h5>
-                        <p>{{ upsell.description }}</p>
-                        {% if upsell.price is not null %} <div class="price">+ {{ upsell.price/100 }} € <small>HT</small>{% endif %}</div>
-                    </article>
-                {% endfor %}
-            </div>
+            {% for row in devis.upsells|batch(3) %}
+                <div class="upsell-row">
+                    {% for upsell in row %}
+                        <article class="upsell-cell" aria-label="{{ upsell.name }}">
+                            <h5>{{ upsell.name }}</h5>
+                            <p>{{ upsell.description }}</p>
+                            {% if upsell.price is not null %} <div class="price">+ {{ upsell.price/100 }} € <small>HT</small>{% endif %}</div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% endfor %}
         </div>
     </section>
     <!-- Totaux -->
