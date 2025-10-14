@@ -231,6 +231,7 @@ final class DevisController extends AbstractController
             $devis->setName($request->request->get("titleDevis"));
             $devis->setTvaRate($request->request->get("tvaRate"));
             $devis->setSubtotal($request->request->get("subtotal"));
+            $devis->setTotalMain($request->request->get("totalMain"));
 
 
             $data = $this->mapServiceAndUpsell($request);
@@ -514,6 +515,8 @@ final class DevisController extends AbstractController
             $devis->setName($request->request->get("titleDevis"));
             $devis->setTvaRate($request->request->get("tvaRate"));
             $devis->setSubtotal($request->request->get("subtotal"));
+            $devis->setTotalMain($request->request->get("totalMain"));
+
 
             $data = $this->mapServiceAndUpsell($request);
 
@@ -624,13 +627,17 @@ final class DevisController extends AbstractController
             $sumUpsells += $upsell->getPrice();
         }
 
+        $sumArticles = ($sumArticles === 0) ? $devis->getTotalMain() : $sumArticles/100;
+
+
         return [
           "sumUpsells" => $sumUpsells/100,
-          "sumArticles" => $sumArticles/100,
+          "sumArticles" => $sumArticles,
           "tvaUpsells" => $sumUpsells/100*($devis->getTvaRate()/100),
-          "tvaArticles" => $sumArticles/100*($devis->getTvaRate()/100),
+          "tvaArticles" => $sumArticles*($devis->getTvaRate()/100),
           "tvaTotal" => round((float) $devis->getSubtotal(),2)*($devis->getTvaRate()/100),
-          "subtotal" => round((float) $devis->getSubtotal(),2)
+          "subtotal" => round((float) $devis->getSubtotal(),2),
+          "totalMain" => round((float) $devis->getTotalMain(),2),
         ];
     }
 

@@ -112,6 +112,9 @@ class Devis
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $subtotal = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $totalMain = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -543,6 +546,18 @@ class Devis
     public function setSubtotal(?string $subtotal): static
     {
         $this->subtotal = $subtotal;
+
+        return $this;
+    }
+
+    public function getTotalMain(): ?string
+    {
+        return $this->totalMain;
+    }
+
+    public function setTotalMain(?string $totalMain): static
+    {
+        $this->totalMain = $totalMain;
 
         return $this;
     }

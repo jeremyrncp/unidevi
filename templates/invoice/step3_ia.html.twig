@@ -93,7 +93,7 @@
 
           const totalMain   = sum('.main-item');
           const totalUpsell = sum('.upsell-item');
-          document.getElementById('totalMain').textContent   = nf.format(totalMain);
+          document.getElementById('totalMain').value   = nf.format(totalMain);
           document.getElementById('totalUpsell').textContent = nf.format(totalUpsell);
           document.getElementById('subtotal').value    = nf.format(totalMain + totalUpsell);
         }
