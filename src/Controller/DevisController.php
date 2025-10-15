@@ -587,7 +587,7 @@ final class DevisController extends AbstractController
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdServiceID);
         $openAIAssistant->waitForRun($thread, $runId);
         $responseService = $openAIAssistant->getLatestAssistantResponse($thread);
-        $loggerService->saveServicePrompt(OpenAIEnum::PROMPT_SERVICES, $responseService);
+        $loggerService->saveServicePrompt(OpenAIEnum::PROMPT_SERVICES, $openAIAssistant->createMessage($description, $duree, $unite), $responseService);
 
         $servicesVOs = $openAIAssistant->extractServices($responseService);
 
@@ -598,7 +598,7 @@ final class DevisController extends AbstractController
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdUpsellID);
         $openAIAssistant->waitForRun($thread, $runId);
         $responseUpsells = $openAIAssistant->getLatestAssistantResponse($thread);
-        $loggerService->saveUpsellsPrompt(OpenAIEnum::PROMPT_UPSELLS, $responseUpsells);
+        $loggerService->saveUpsellsPrompt(OpenAIEnum::PROMPT_UPSELLS, $openAIAssistant->createMessage($description, $duree, $unite), $responseUpsells);
         $upsellsVOs = $openAIAssistant->extractUpsells($responseUpsells);
 
         $sumServices = $utilsService->calculateSumWithPrice($servicesVOs);

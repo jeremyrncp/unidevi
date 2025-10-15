@@ -12,11 +12,12 @@ class LoggerService
     {
     }
 
-    public function saveServicePrompt(string $prompt, string $result): Logger
+    public function saveServicePrompt(string $prompt, string $text, string $result): Logger
     {
         $logger = new Logger();
         $logger->setCreatedAt(new \DateTime());
         $logger->setType(Logger::TYPE_SERVICE)
+                ->setText($text)
                 ->setPrompt($prompt)
                 ->setResult($result);
 
@@ -26,11 +27,12 @@ class LoggerService
         return $logger;
     }
 
-    public function saveUpsellsPrompt(string $prompt, string $result): Logger
+    public function saveUpsellsPrompt(string $prompt, string $text,  string $result): Logger
     {
         $logger = new Logger();
         $logger->setCreatedAt(new \DateTime());
         $logger->setType(Logger::TYPE_UPSELLS)
+            ->setText($text)
             ->setPrompt($prompt)
             ->setResult($result);
 
