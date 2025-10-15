@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Appointment;
 use App\Entity\Holiday;
+use App\Entity\Logger;
 use App\Entity\Payment;
 use App\Entity\Subscription;
 use App\Entity\TemplatedEmail;
@@ -124,5 +125,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Souscriptions', 'fas fa-list', Subscription::class);
         yield MenuItem::linkToCrud('Paiements', 'fas fa-list', Payment::class);
+        yield MenuItem::linkToCrud('Loggers', 'fas fa-list', Logger::class);
+
     }
 }

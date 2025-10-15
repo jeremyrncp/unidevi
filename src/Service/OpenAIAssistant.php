@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Enum\OpenAIEnum;
 use App\VO\ServiceVO;
 use App\VO\UpsellVO;
 
@@ -15,7 +16,7 @@ class OpenAIAssistant
         $this->apiKey = $apiKey;
     }
 
-    public function getAssistantId($type="Assistant services", $instructions = "À partir de la description du client, rédige uniquement une liste professionnelle et concise des prestations incluses dans le devis. Structure en zones principales (ex : entrée, chambres, cuisine, salle de bain…). 2 à 3 bullet points maximum par zone. Interdiction absolue d’ajouter : préparation, plan, diagnostic, engagement, sécurité, conformité, organisation ou rapport. Pas d’introduction ni de conclusion : uniquement la liste des prestations visibles avec pour chaque catégorie deux * et le prix de chaque prestation en euro entre parenthèses. Limite totale : 10 bullet points maximum.")
+    public function getAssistantId($type="Assistant services", $instructions = OpenAIEnum::PROMPT_SERVICES)
     {
         $data = [
             'name' => $type,

@@ -8,11 +8,13 @@ use App\Entity\Devis;
 use App\Entity\Invoice;
 use App\Entity\Upsell;
 use App\Entity\User;
+use App\Enum\OpenAIEnum;
 use App\Form\ChangeStyleDevisType;
 use App\Form\CustomerDevisType;
 use App\Form\SelectionCustomerType;
 use App\Repository\CustomerRepository;
 use App\Repository\DevisRepository;
+use App\Service\LoggerService;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
 use App\Service\SubscriptionService;
@@ -564,7 +566,7 @@ final class DevisController extends AbstractController
 
 
     #[Route('/devis/ia-generate/{id}', name: 'app_devis_ia_generate')]
-    public function iAGenerate(Devis $devis, Request $request, EntityManagerInterface $entityManager, OpenAIAssistant $openAIAssistant, UtilsService $utilsService): Response
+    public function iAGenerate(Devis $devis, Request $request, LoggerService $loggerService, OpenAIAssistant $openAIAssistant, UtilsService $utilsService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -585,15 +587,18 @@ final class DevisController extends AbstractController
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdServiceID);
         $openAIAssistant->waitForRun($thread, $runId);
         $responseService = $openAIAssistant->getLatestAssistantResponse($thread);
+        $loggerService->saveServicePrompt(OpenAIEnum::PROMPT_SERVICES, $responseService);
+
         $servicesVOs = $openAIAssistant->extractServices($responseService);
 
         /** Extract upsells **/
-        $assistantIdUpsellID  = $openAIAssistant->getAssistantId("Assistant upsells", "À partir de la description du client, propose 3 options d’upsell à ajouter au devis. Chaque upsell doit être défini en 1 mot ou 1 courte phrase maximum. Ajoute entre parenthèse un prix réaliste pour chaque upsell (ex : 50 € sans le signe +. Le style doit être clair, concis et professionnel. Présente le tout sous forme de liste simple avec 3 bullet points.");
+        $assistantIdUpsellID  = $openAIAssistant->getAssistantId("Assistant upsells", OpenAIEnum::PROMPT_UPSELLS);
         $thread = $openAIAssistant->createThread();
         $openAIAssistant->sendMessage($thread, $openAIAssistant->createMessage($description, $duree, $unite));
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdUpsellID);
         $openAIAssistant->waitForRun($thread, $runId);
         $responseUpsells = $openAIAssistant->getLatestAssistantResponse($thread);
+        $loggerService->saveUpsellsPrompt(OpenAIEnum::PROMPT_UPSELLS, $responseUpsells);
         $upsellsVOs = $openAIAssistant->extractUpsells($responseUpsells);
 
         $sumServices = $utilsService->calculateSumWithPrice($servicesVOs);

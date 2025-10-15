@@ -169,15 +169,19 @@
       let uniquid = Date.now() + Math.floor(Math.random() * 100);
       row.className = 'line circle';
       row.innerHTML = `
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3" id="id-` + uniquid + `">
           <div class="form-check mt-1">
             <input class="form-check-input main-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
           </div>
           <div>
             <div class="title"></div>
             <div class="desc"></div>
+            <div class="price">
+              <a class="btn btn-danger" onclick="deleteRow('` + uniquid + `')" type="button">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
           </div>
-
           <input type="hidden" name="title-` + uniquid + `" value="${title}" />
           <input type="hidden" name="description-` + uniquid + `" value="${desc}" />
           <input type="hidden" name="price-` + uniquid + `" value="${price}" />
@@ -201,7 +205,7 @@
       let uniquid = Date.now() + Math.floor(Math.random() * 100);
       row.className = 'line upsell checked';
       row.innerHTML = `
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3" id="id-` + uniquid + `">
           <div class="form-check mt-1">
             <input class="form-check-input upsell-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
           </div>
@@ -209,7 +213,11 @@
             <div class="title"></div>
             <div class="desc"></div>
           </div>
-          <div class="price"><span data-eur>${price}</span> € HT</div>
+          <div class="price"><span data-eur>${price}</span> € HT
+            <a class="btn btn-danger" onclick="deleteRow('` + uniquid + `')">
+               <i class="bi bi-trash"></i>
+            </a>
+          </div>
           <input type="hidden" name="title-` + uniquid + `" value="${title}" />
           <input type="hidden" name="description-` + uniquid + `" value="${desc}" />
           <input type="hidden" name="price-` + uniquid + `" value="${price}" />
@@ -224,6 +232,16 @@
       syncUpsellStyles(); updateTotals();
     });
 
+    </script>
+    <script type="text/javascript">
+    const changePrice = (id, value) => {
+      document.querySelector("#checkbox-" + id).setAttribute("data-price", value);
+      updateTotals();
+    }
+    const deleteRow = (id) => {
+      document.querySelector("#id-" + id).remove();
+      updateTotals();
+    }
     </script>
 </main>
 {% endblock %}
