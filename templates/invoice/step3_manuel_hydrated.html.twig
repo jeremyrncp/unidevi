@@ -29,9 +29,6 @@
                     </div>
 
                     <div class="price">
-                            <span data-eur>
-                                <input type="text" name="price-{{service.id}}" value="{{service.price}}" onchange="changePrice({{service.id}}, this.value)"/>
-                            </span> € HT
 
                         <button class="btn btn-danger" onclick="deleteRow({{service.id}})">
                             <i class="bi bi-trash"></i>
@@ -40,6 +37,8 @@
                     <input type="hidden" name="title-{{service.id}}" value="{{service.description}}" />
                     <input type="hidden" name="description-{{service.id}}" value="&nbsp;" />
                     <input type="hidden" name="type-{{service.id}}" value="service" />
+                    <input type="hidden" name="price-{{service.id}}" value="" />
+
                 </div>
             {% endfor %}
         {% endif %}
