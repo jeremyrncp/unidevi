@@ -23,6 +23,7 @@ class LoggerCrudController extends AbstractCrudController
             DateTimeField::new("createdAt"),
             TextField::new('type'),
             TextEditorField::new('prompt'),
+            TextEditorField::new('text'),
             TextEditorField::new('result')
         ];
     }
