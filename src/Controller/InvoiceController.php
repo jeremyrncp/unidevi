@@ -588,6 +588,7 @@ final class InvoiceController extends AbstractController
             "upsells" => $upsellsVOs,
             "sumServices" => $sumServices,
             "sumUpsells" => $sumUpsells,
+            "subtotal" => $sumUpsells + $sumServices,
             "titleDevis" => $description
         ]);
     }
