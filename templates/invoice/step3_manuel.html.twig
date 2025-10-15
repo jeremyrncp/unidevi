@@ -84,7 +84,7 @@
                     </div>
                     <div>
                         <label class="form-label">Prix HT (€)</label>
-                        <input class="form-control" type="number" min="0" step="0.01" required>
+                        <input class="form-control" type="number" min="0" step="0.01">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -178,7 +178,6 @@
             <div class="desc"></div>
           </div>
 
-        <div class="price"><span data-eur>${price}</span> € HT</div>
           <input type="hidden" name="title-` + uniquid + `" value="${title}" />
           <input type="hidden" name="description-` + uniquid + `" value="${desc}" />
           <input type="hidden" name="price-` + uniquid + `" value="${price}" />
