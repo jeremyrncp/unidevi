@@ -17,6 +17,7 @@ use App\Repository\DevisRepository;
 use App\Service\LoggerService;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
+use App\Service\PromptService;
 use App\Service\SubscriptionService;
 use App\Service\UtilsService;
 use App\VO\SelectionCustomerVO;
@@ -36,7 +37,9 @@ use Twig\Environment;
 
 final class DevisController extends AbstractController
 {
-
+    public function __construct(private readonly PromptService $promptService)
+    {
+    }
     #[Route('/devis', name: 'app_devis_list')]
     public function index(DevisRepository $devisRepository, Request $request, PaginatorInterface $paginator, UtilsService $utilsService): Response
     {
@@ -581,7 +584,7 @@ final class DevisController extends AbstractController
         $unite = $data->unite;
 
         /** Extract services with open ai **/
-        $assistantIdServiceID  = $openAIAssistant->getAssistantId();
+        $assistantIdServiceID  = $openAIAssistant->getAssistantId("assistant services", $this->promptService->getPromptServices());
         $thread = $openAIAssistant->createThread();
         $openAIAssistant->sendMessage($thread, $openAIAssistant->createMessage($description, $duree, $unite));
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdServiceID);
@@ -592,7 +595,7 @@ final class DevisController extends AbstractController
         $servicesVOs = $openAIAssistant->extractServices($responseService);
 
         /** Extract upsells **/
-        $assistantIdUpsellID  = $openAIAssistant->getAssistantId("Assistant upsells", OpenAIEnum::PROMPT_UPSELLS);
+        $assistantIdUpsellID  = $openAIAssistant->getAssistantId("Assistant upsells", $this->promptService->getPromptUpsells());
         $thread = $openAIAssistant->createThread();
         $openAIAssistant->sendMessage($thread, $openAIAssistant->createMessage($description, $duree, $unite));
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdUpsellID);

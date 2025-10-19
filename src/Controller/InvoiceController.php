@@ -19,6 +19,7 @@ use App\Repository\DevisRepository;
 use App\Repository\InvoiceRepository;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
+use App\Service\PromptService;
 use App\Service\SubscriptionService;
 use App\Service\UtilsService;
 use App\VO\SelectionCustomerVO;
@@ -40,7 +41,9 @@ use Twig\Environment;
 final class InvoiceController extends AbstractController
 {
 
-
+    public function __construct(private readonly PromptService $promptService)
+    {
+    }
     #[Route('/invoice', name: 'app_invoice_list')]
     public function index(InvoiceRepository $invoiceRepository, Request $request, PaginatorInterface $paginator, UtilsService $utilsService): Response
     {
@@ -562,7 +565,7 @@ final class InvoiceController extends AbstractController
         $unite = $data->unite;
 
         /** Extract services with open ai **/
-        $assistantIdServiceID  = $openAIAssistant->getAssistantId();
+        $assistantIdServiceID  = $openAIAssistant->getAssistantId("assistént services", $this->promptService->getPromptServices());
         $thread = $openAIAssistant->createThread();
         $openAIAssistant->sendMessage($thread, $openAIAssistant->createMessage($description, $duree, $unite));
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdServiceID);
@@ -571,7 +574,7 @@ final class InvoiceController extends AbstractController
         $servicesVOs = $openAIAssistant->extractServices($responseService);
 
         /** Extract upsells **/
-        $assistantIdUpsellID  = $openAIAssistant->getAssistantId("Assistant upsells", "À partir de la description du client, propose 3 options d’upsell à ajouter au devis. Chaque upsell doit être défini en 1 mot ou 1 courte phrase maximum. Ajoute entre parenthèse un prix réaliste pour chaque upsell (ex : 50 € sans le signe +. Le style doit être clair, concis et professionnel. Présente le tout sous forme de liste simple avec 3 bullet points.");
+        $assistantIdUpsellID  = $openAIAssistant->getAssistantId("Assistant upsells", $this->promptService->getPromptUpsells());
         $thread = $openAIAssistant->createThread();
         $openAIAssistant->sendMessage($thread, $openAIAssistant->createMessage($description, $duree, $unite));
         $runId = $openAIAssistant->runAssistant($thread, $assistantIdUpsellID);

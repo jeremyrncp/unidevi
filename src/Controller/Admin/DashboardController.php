@@ -6,6 +6,7 @@ use App\Entity\Appointment;
 use App\Entity\Holiday;
 use App\Entity\Logger;
 use App\Entity\Payment;
+use App\Entity\Prompt;
 use App\Entity\Subscription;
 use App\Entity\TemplatedEmail;
 use App\Entity\Timeslot;
@@ -126,6 +127,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Souscriptions', 'fas fa-list', Subscription::class);
         yield MenuItem::linkToCrud('Paiements', 'fas fa-list', Payment::class);
         yield MenuItem::linkToCrud('Loggers', 'fas fa-list', Logger::class);
+        yield MenuItem::linkToCrud('Prompts', 'fas fa-list', Prompt::class);
+
 
     }
 }
