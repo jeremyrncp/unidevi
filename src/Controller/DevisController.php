@@ -621,7 +621,7 @@ final class DevisController extends AbstractController
             "sumUpsells" => $sumUpsells,
             "subtotal" => $sumUpsells + $sumServices,
             "titleDevis" => $description,
-            "servicesRegistrered" => $services
+            "servicesRegistered" => $services
         ]);
     }
 
