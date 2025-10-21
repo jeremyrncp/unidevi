@@ -680,7 +680,7 @@ final class DevisController extends AbstractController
 
 
         foreach ($return as $key => $item) {
-            if (!array_key_exists("checkbox", $item) && $item["checkbox"] !== "on") {
+            if (array_key_exists("checkbox", $item) && $item["checkbox"] !== "on") {
                 unset($return[$key]);
             }
         }
