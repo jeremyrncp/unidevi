@@ -14,6 +14,7 @@ use App\Form\CustomerDevisType;
 use App\Form\SelectionCustomerType;
 use App\Repository\CustomerRepository;
 use App\Repository\DevisRepository;
+use App\Repository\ServiceRepository;
 use App\Service\LoggerService;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
@@ -218,12 +219,12 @@ final class DevisController extends AbstractController
 
         return $this->render('devis/step2.html.twig', [
             'user' => $user,
-            'devis' => $devis,
+            'devis' => $devis
         ]);
     }
 
     #[Route('/devis/step3-manuel/{id}', name: 'app_devis_step3_manuel')]
-    public function step3Manuel(Devis $devis, Request $request, EntityManagerInterface $entityManager): Response
+    public function step3Manuel(Devis $devis, Request $request, ServiceRepository $serviceRepository, EntityManagerInterface $entityManager): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -277,8 +278,11 @@ final class DevisController extends AbstractController
             return $this->redirectToRoute("app_devis_step4", ["id" => $devis->getId()]);
         }
 
+        $services = $serviceRepository->findBy(["owner" => $user]);
+
         return $this->render('devis/step3_manuel.html.twig', [
             'user' => $user,
+            "services"=> $services
         ]);
     }
 
@@ -569,7 +573,7 @@ final class DevisController extends AbstractController
 
 
     #[Route('/devis/ia-generate/{id}', name: 'app_devis_ia_generate')]
-    public function iAGenerate(Devis $devis, Request $request, LoggerService $loggerService, OpenAIAssistant $openAIAssistant, UtilsService $utilsService): Response
+    public function iAGenerate(Devis $devis, Request $request, ServiceRepository $serviceRepository, LoggerService $loggerService, OpenAIAssistant $openAIAssistant, UtilsService $utilsService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -607,14 +611,17 @@ final class DevisController extends AbstractController
         $sumServices = $utilsService->calculateSumWithPrice($servicesVOs);
         $sumUpsells = $utilsService->calculateSumWithPrice($upsellsVOs);
 
-            return $this->render('devis/step3_manuel_hydrated.html.twig', [
+        $services = $serviceRepository->findBy(["owner" => $user]);
+
+        return $this->render('devis/step3_manuel_hydrated.html.twig', [
             'user' => $user,
             "services" => $servicesVOs,
             "upsells" => $upsellsVOs,
             "sumServices" => $sumServices,
             "sumUpsells" => $sumUpsells,
             "subtotal" => $sumUpsells + $sumServices,
-            "titleDevis" => $description
+            "titleDevis" => $description,
+            "servicesRegistrered" => $services
         ]);
     }
 

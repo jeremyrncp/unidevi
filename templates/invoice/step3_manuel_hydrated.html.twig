@@ -15,6 +15,20 @@
     <!-- Prestations principales -->
     <h5 class="mt-4 mb-3">Prestations principales</h5>
 
+    <div class="row mt-3 mb-3">
+        <div class="col-6">
+            <select id="serviceSelect" class="form-control">
+                {% for service in servicesRegistered %}
+                    <option value="{{ service.title }}${{ service.description }}${{ service.price }}">{{ service.title }} - {{ service.price }} €</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-brand text-white" onclick="addServiceSelect()" type="button">Ajouter</button>
+        </div>
+    </div>
+
+
     <div id="mainList">
         {% if services is defined %}
             {% for service in services %}
@@ -110,3 +124,5 @@
         <button class="btn btn-brand text-white">Continuer</button>
     </div>
 </form>
+
+{% include "_partials/add_service_select.html.twig" %}

@@ -146,6 +146,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $fullname = null;
 
+    /**
+     * @var Collection<int, Service>
+     */
+    #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'owner', orphanRemoval: true)]
+    private Collection $services;
+
 
 
     public function __construct()
@@ -155,6 +161,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->devis = new ArrayCollection();
         $this->invoices = new ArrayCollection();
         $this->customers = new ArrayCollection();
+        $this->services = new ArrayCollection();
 
     }
 
@@ -710,6 +717,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFullname(?string $fullname): static
     {
         $this->fullname = $fullname;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getOwner() === $this) {
+                $service->setOwner(null);
+            }
+        }
 
         return $this;
     }

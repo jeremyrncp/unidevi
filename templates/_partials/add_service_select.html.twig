@@ -1,0 +1,36 @@
+<script type="text/javascript">
+    const addServiceSelect = () => {
+      let data = document.querySelector("#serviceSelect").value;
+      let splitData = data.split("$");
+      let price = splitData[2];
+      let desc = splitData[1];
+      let title = splitData[0];
+
+      let uniquid = Date.now() + Math.floor(Math.random() * 100);
+      const row = document.createElement('div');
+      row.innerHTML = `
+        <div class="d-flex gap-3" id="id-` + uniquid + `">
+          <div class="form-check mt-1">
+            <input class="form-check-input main-item" name="checkbox-` + uniquid + `" type="checkbox" checked data-price="${price}">
+          </div>
+          <div>
+            <div class="title"></div>
+            <div class="desc"></div>
+            <div class="price">
+              <a class="btn btn-danger" onclick="deleteRow('` + uniquid + `')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+          </div>
+          <input type="hidden" name="title-` + uniquid + `" value="${title}" />
+          <input type="hidden" name="description-` + uniquid + `" value="${desc}" />
+          <input type="hidden" name="price-` + uniquid + `" value="${price}" />
+          <input type="hidden" name="type-` + uniquid + `" value="service" />
+        </div>
+      `;
+      row.querySelector('.title').textContent = title || 'Nouvelle prestation';
+      row.querySelector('.desc').textContent  = desc;
+      document.getElementById('mainList').appendChild(row);
+      updateTotals();
+    }
+</script>

@@ -1,0 +1,42 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Mes clients{% endblock %}
+
+{% block body %}
+    <div class="card-soft p-4 p-md-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <h1 class="mb-0">Mes services</h1>
+            <a class="btn btn-brand text-white" href="{{ path("app_service_add") }}">
+                <i class="bi bi-plus-lg me-2"></i>Ajouter un service
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th scope="col">Titre</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="clientRows">
+                {% for service in services %}
+                    <tr>
+                        <td class="fw-semibold">{{ service.title }}</td>
+                        <td>{{ service.price }}</td>
+                        <td class="text-end">
+                            <form method="post" action="{{ path('app_service_delete', {'id': service.id}) }}" onsubmit="return confirm('Voulez-vous supprimer cette donnée ?');">
+                                <a class="btn btn-sm btn-icon" data-bs-toggle="tooltip" title="Éditer" href="{{ path("app_service_edit", {"id": service.id}) }}"><i class="bi bi-pencil"></i></a>
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ service.id) }}">
+                                <button class="btn btn-sm btn-icon" data-bs-toggle="tooltip" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

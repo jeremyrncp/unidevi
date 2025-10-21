@@ -17,6 +17,7 @@ use App\Form\SelectionCustomerType;
 use App\Repository\CustomerRepository;
 use App\Repository\DevisRepository;
 use App\Repository\InvoiceRepository;
+use App\Repository\ServiceRepository;
 use App\Service\NumerotationService;
 use App\Service\OpenAIAssistant;
 use App\Service\PromptService;
@@ -226,7 +227,7 @@ final class InvoiceController extends AbstractController
     }
 
     #[Route('/invoice/step3-manuel/{id}', name: 'app_invoice_step3_manuel')]
-    public function step3Manuel(Invoice $devis, Request $request, EntityManagerInterface $entityManager): Response
+    public function step3Manuel(Invoice $devis, Request $request, ServiceRepository $serviceRepository, EntityManagerInterface $entityManager): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -280,8 +281,11 @@ final class InvoiceController extends AbstractController
             return $this->redirectToRoute("app_invoice_step4", ["id" => $devis->getId()]);
         }
 
+        $services = $serviceRepository->findBy(["owner" => $user]);
+
         return $this->render('invoice/step3_manuel.html.twig', [
             'user' => $user,
+            "services" => $services
         ]);
     }
 
@@ -550,7 +554,7 @@ final class InvoiceController extends AbstractController
 
 
     #[Route('/invoice/ia-generate/{id}', name: 'app_invoice_ia_generate')]
-    public function iAGenerate(Invoice $devis, Request $request, EntityManagerInterface $entityManager, OpenAIAssistant $openAIAssistant, UtilsService $utilsService): Response
+    public function iAGenerate(Invoice $devis, Request $request, ServiceRepository $serviceRepository, EntityManagerInterface $entityManager, OpenAIAssistant $openAIAssistant, UtilsService $utilsService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -585,14 +589,17 @@ final class InvoiceController extends AbstractController
         $sumServices = $utilsService->calculateSumWithPrice($servicesVOs);
         $sumUpsells = $utilsService->calculateSumWithPrice($upsellsVOs);
 
-            return $this->render('invoice/step3_manuel_hydrated.html.twig', [
+        $services = $serviceRepository->findBy(["owner" => $user]);
+
+        return $this->render('invoice/step3_manuel_hydrated.html.twig', [
             'user' => $user,
             "services" => $servicesVOs,
             "upsells" => $upsellsVOs,
             "sumServices" => $sumServices,
             "sumUpsells" => $sumUpsells,
             "subtotal" => $sumUpsells + $sumServices,
-            "titleDevis" => $description
+            "titleDevis" => $description,
+            "servicesRegistered" => $services
         ]);
     }
 

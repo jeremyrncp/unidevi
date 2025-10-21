@@ -1,0 +1,15 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Editer un service{% endblock %}
+
+{% block body %}
+    <div class="card-soft p-4 p-md-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <h1 class="mb-0">Editer un service</h1>
+            <div>
+                <a href="{{ path("app_parameters_services") }}" class="btn btn-brand text-white">Gérer les services</a>
+            </div>
+        </div>
+        {{ form(form) }}
+    </div>
+{% endblock %}
