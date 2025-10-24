@@ -122,13 +122,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Devis>
      */
-    #[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'owner', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'owner', orphanRemoval: true, cascade: ["remove"])]
     private Collection $devis;
 
     /**
      * @var Collection<int, Customer>
      */
-    #[ORM\OneToMany(targetEntity: Customer::class, mappedBy: 'owner')]
+    #[ORM\OneToMany(targetEntity: Customer::class, mappedBy: 'owner', cascade: ["remove"])]
     private Collection $customers;
 
     #[ORM\Column(nullable: true)]
@@ -140,7 +140,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Devis>
      */
-    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'owner', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'owner', orphanRemoval: true, cascade: ["remove"])]
     private Collection $invoices;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -149,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Service>
      */
-    #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'owner', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'owner', orphanRemoval: true, cascade: ["remove"])]
     private Collection $services;
 
 
