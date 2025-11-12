@@ -623,6 +623,9 @@ final class InvoiceController extends AbstractController
 
         $sumArticles = ($sumArticles === 0) ? $devis->getTotalMain() : $sumArticles/100;
 
+        dump($devis->getTvaRate());
+        dump($sumArticles);
+
         return [
             "sumUpsells" => $sumUpsells/100,
             "sumArticles" => $sumArticles,
