@@ -626,8 +626,8 @@ final class InvoiceController extends AbstractController
         return [
             "sumUpsells" => $sumUpsells/100,
             "sumArticles" => $sumArticles,
-            "tvaUpsells" => $sumUpsells/100*($devis->getTvaRate()/100),
-            "tvaArticles" => $sumArticles*($devis->getTvaRate()/100),
+            "tvaUpsells" => round((float) $sumUpsells/100*($devis->getTvaRate()/100), 2),
+            "tvaArticles" => round((float) $sumArticles*($devis->getTvaRate()/100), 2),
             "tvaTotal" => round((float) $devis->getSubtotal(),2)*($devis->getTvaRate()/100),
             "subtotal" => round((float) $devis->getSubtotal(),2),
             "totalMain" => round((float) $devis->getTotalMain(),2),
