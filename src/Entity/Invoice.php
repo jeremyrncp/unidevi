@@ -543,6 +543,8 @@ class Invoice
         $this->addressCustomer = $devis->getAddressCustomer();
         $this->cityCustomer = $devis->getCityCustomer();
         $this->postalCodeCustomer = $devis->getPostalCodeCustomer();
+        $this->totalMain = $devis->getTotalMain();
+        $this->subtotal = $devis->getSubtotal();
 
         /** @var Article $article */
         foreach ($devis->getArticles() as $article) {
