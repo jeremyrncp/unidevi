@@ -108,7 +108,7 @@ final class DevisController extends AbstractController
             }
 
             if ($user->getEmail() !== null) {
-                $devis->setEmailCompany($user->getEmail());
+                $devis->setEmailCompany($user->getEmailContact());
             }
 
             if ($user->getSiret() !== null) {
