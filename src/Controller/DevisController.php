@@ -510,6 +510,26 @@ final class DevisController extends AbstractController
         ]);
     }
 
+
+    #[Route('/devis/delete/{id}', name: 'app_devis_delete')]
+    public function delete(Devis $devis, Request $request, EntityManagerInterface $entityManager, Environment $twig, MailerInterface $mailer): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($devis->getOwner() !== $user) {
+            throw new UnauthorizedHttpException("Non propritaire du devis");
+        }
+
+        $entityManager->remove($devis);
+        $entityManager->flush();
+
+        $this->addFlash("message", "Devis supprimé");
+
+        return $this->redirectToRoute("app_devis_list");
+    }
+
+
     #[Route('/devis/step3-ia/{id}', name: 'app_devis_step3_ia')]
     public function step3IA(Devis $devis, Request $request, EntityManagerInterface $entityManager): Response
     {

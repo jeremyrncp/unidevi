@@ -71,6 +71,9 @@
                         <td class="text-center">
                             <a href="{{ path("app_devis_step4", {"id": devi.id}) }}" class="text-body me-2" title="Voir"><i class="bi bi-eye"></i></a>
                             <a href="{{ path("app_devis_duplication", {"id": devi.id}) }}" class="text-body" title="Dupliquer"><i class="bi bi-arrow-repeat"></i></a>
+                            {% if devi.status == "Brouillon" %}
+                            <a href="{{ path("app_devis_delete", {"id": devi.id}) }}" class="text-body" title="Supprimer"><i class="bi bi-trash"></i></a>
+                            {% endif %}
                         </td>
                     </tr>
 

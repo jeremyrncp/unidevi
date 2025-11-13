@@ -491,6 +491,24 @@ final class InvoiceController extends AbstractController
         ]);
     }
 
+    #[Route('/invoice/delete/{id}', name: 'app_invoice_delete')]
+    public function delete(Invoice $devis, Request $request, EntityManagerInterface $entityManager, Environment $twig, MailerInterface $mailer): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($devis->getOwner() !== $user) {
+            throw new UnauthorizedHttpException("Non propritaire de la facture");
+        }
+
+        $entityManager->remove($devis);
+        $entityManager->flush();
+
+        $this->addFlash("message", "Facture supprimée");
+
+        return $this->redirectToRoute("app_invoice_list");
+    }
+
     #[Route('/invoice/step3-ia/{id}', name: 'app_invoice_step3_ia')]
     public function step3IA(Invoice $devis, Request $request, EntityManagerInterface $entityManager): Response
     {
